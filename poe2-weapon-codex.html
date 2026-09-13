@@ -1,0 +1,957 @@
+<title>Wraeclast Weapon Codex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#e9ecf0; --surface:#f8f9fb; --surface-2:#dfe3ea; --raised:#ffffff;
+  --line:#cbd2dc; --line-soft:#dde2e9;
+  --text:#191d24; --dim:#5a6572; --faint:#8b95a2;
+  --accent:#8a5718; --accent-2:#b8863c; --accent-wash:#f0e6d6;
+  --phys:#6b7683; --fire:#b8492a; --cold:#2f7ba6; --light:#9a7410;
+  --chaos:#4f7f34; --util:#6a5a94; --spirit:#8a4b6e;
+  --good:#2e7d52; --warn:#9a6a12;
+  --spine:#c3a678;
+  --shadow:0 1px 2px rgba(20,26,34,.06),0 8px 24px -12px rgba(20,26,34,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111418; --surface:#181c22; --surface-2:#20252d; --raised:#1d2229;
+    --line:#2c333d; --line-soft:#252b33;
+    --text:#e4e8ee; --dim:#98a3b1; --faint:#6d7783;
+    --accent:#d0a054; --accent-2:#a87f3c; --accent-wash:#2a2318;
+    --phys:#9aa5b2; --fire:#e07a52; --cold:#5aa8d4; --light:#d8ad3c;
+    --chaos:#8ab862; --util:#a596d0; --spirit:#cc82a8;
+    --good:#5cbd8b; --warn:#d6a840;
+    --spine:#6d5a34;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111418; --surface:#181c22; --surface-2:#20252d; --raised:#1d2229;
+  --line:#2c333d; --line-soft:#252b33;
+  --text:#e4e8ee; --dim:#98a3b1; --faint:#6d7783;
+  --accent:#d0a054; --accent-2:#a87f3c; --accent-wash:#2a2318;
+  --phys:#9aa5b2; --fire:#e07a52; --cold:#5aa8d4; --light:#d8ad3c;
+  --chaos:#8ab862; --util:#a596d0; --spirit:#cc82a8;
+  --good:#5cbd8b; --warn:#d6a840;
+  --spine:#6d5a34;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--text);
+  font-family:Archivo,"Segoe UI",system-ui,sans-serif;
+  font-size:15px; line-height:1.55; margin:0;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:Spectral,Georgia,"Times New Roman",serif;text-wrap:balance;margin:0}
+.mono{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1500px;margin:0 auto;padding-inline:18px;padding-block:0}
+
+header.top{
+  position:sticky; top:0; z-index:40;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topin{max-width:1500px;margin:0 auto;padding:14px 18px;display:flex;gap:18px;align-items:baseline;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;gap:1px;margin-right:auto}
+.brand h1{font-size:24px;font-weight:800;letter-spacing:-.01em;line-height:1.1}
+.brand .sub{font-size:12px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.ver{
+  font-family:"JetBrains Mono",monospace;font-size:11px;
+  border:1px solid var(--line);border-radius:3px;padding:3px 8px;color:var(--dim);
+  background:var(--surface-2);white-space:nowrap;
+}
+.search{
+  flex:1 1 240px;max-width:340px;display:flex;align-items:center;gap:8px;
+  border:1px solid var(--line);background:var(--raised);border-radius:4px;padding:7px 10px;
+}
+.search input{border:0;background:none;color:var(--text);font:inherit;font-size:14px;width:100%;outline:none}
+.search input::placeholder{color:var(--faint)}
+.search svg{flex:none;stroke:var(--faint)}
+
+/* ---------- notice ---------- */
+.notice{
+  border-left:3px solid var(--accent-2); background:var(--accent-wash);
+  padding:12px 16px; margin:18px 0 0; border-radius:0 4px 4px 0; font-size:13.5px; color:var(--text);
+}
+.notice b{font-weight:700}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:214px minmax(0,1fr) 340px;gap:26px;align-items:start;padding-block:22px 60px}
+@media(max-width:1180px){.cols{grid-template-columns:190px minmax(0,1fr)}}
+@media(max-width:820px){.cols{grid-template-columns:minmax(0,1fr);gap:20px}}
+
+/* ---------- rail ---------- */
+nav.rail{position:sticky;top:88px;display:flex;flex-direction:column;gap:2px}
+@media(max-width:820px){
+  nav.rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px;scrollbar-width:thin}
+}
+.railcap{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:0 0 6px 10px}
+@media(max-width:820px){.railcap{display:none}}
+.wbtn{
+  display:flex;align-items:baseline;gap:8px;width:100%;text-align:left;
+  border:0;border-left:2px solid transparent;background:none;color:var(--dim);
+  font:inherit;font-size:14px;font-weight:500;padding:7px 10px;cursor:pointer;border-radius:0 4px 4px 0;
+}
+.wbtn:hover{background:var(--surface-2);color:var(--text)}
+.wbtn .at{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--faint);margin-left:auto;letter-spacing:.04em}
+.wbtn[aria-current="true"]{background:var(--surface);color:var(--text);border-left-color:var(--accent);font-weight:700}
+.wbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+@media(max-width:820px){
+  .wbtn{width:auto;white-space:nowrap;border-left:0;border-bottom:2px solid transparent;border-radius:4px 4px 0 0}
+  .wbtn[aria-current="true"]{border-left:0;border-bottom-color:var(--accent)}
+  .wbtn .at{display:none}
+}
+.raildiv{height:1px;background:var(--line);margin:10px 10px}
+@media(max-width:820px){.raildiv{width:1px;height:auto;margin:4px 2px}}
+
+/* ---------- main ---------- */
+main{min-width:0}
+.whead{border-bottom:1px solid var(--line);padding-bottom:18px;margin-bottom:4px}
+.eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.whead h2{font-size:38px;font-weight:800;letter-spacing:-.02em;margin:4px 0 2px}
+@media(max-width:520px){.whead h2{font-size:29px}}
+.whead .tagline{color:var(--dim);font-size:16px;font-family:Spectral,serif;font-style:italic}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.mchip{
+  font-family:"JetBrains Mono",monospace;font-size:11px;border:1px solid var(--line);
+  background:var(--surface);padding:4px 9px;border-radius:3px;color:var(--dim);
+}
+.mchip b{color:var(--text);font-weight:700}
+
+.prose{max-width:68ch;color:var(--dim);font-size:14.5px;margin:16px 0 0}
+.prose strong{color:var(--text);font-weight:600}
+
+/* core mechanics */
+.cores{display:flex;flex-wrap:wrap;gap:10px;margin:24px 0 8px}
+.core{flex:1 1 270px;background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;padding:14px 16px;min-width:0}
+.core h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.core p{margin:0;font-size:13px;color:var(--dim);line-height:1.5}
+
+/* ---------- ladder ---------- */
+.ladder{margin-top:30px}
+.ladder h3, .secth{font-family:Spectral,serif;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
+.tier{display:grid;grid-template-columns:78px minmax(0,1fr);gap:18px;position:relative}
+.tier:last-child .gut::after{display:none}
+.gut{position:relative;padding-top:2px}
+.gut::after{content:"";position:absolute;left:23px;top:34px;bottom:-8px;width:1px;background:linear-gradient(var(--spine),var(--line-soft))}
+.gemno{
+  width:46px;height:46px;border-radius:50%;border:1px solid var(--spine);
+  background:var(--surface);display:grid;place-items:center;
+  font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;color:var(--accent);
+}
+.gemlbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:center;width:46px;margin-top:5px;line-height:1.3;font-weight:700}
+.tbody{padding-bottom:26px;min-width:0}
+.tname{font-family:Spectral,serif;font-size:17px;font-weight:600;margin:8px 0 2px}
+.tnote{font-size:12.5px;color:var(--faint);margin:0 0 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:10px}
+
+.skill{
+  text-align:left;font:inherit;cursor:pointer;
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;
+  padding:11px 13px;display:flex;flex-direction:column;gap:6px;min-width:0;
+  transition:border-color .12s,transform .12s;
+}
+.skill:hover{border-color:var(--accent-2);transform:translateY(-1px)}
+.skill:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.skill[aria-pressed="true"]{border-color:var(--accent);background:var(--raised);box-shadow:var(--shadow)}
+.sname{font-family:Spectral,serif;font-size:15.5px;font-weight:600;line-height:1.25;color:var(--text);display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.srole{font-size:12.5px;color:var(--dim);line-height:1.45}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tg{font-family:"JetBrains Mono",monospace;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;padding:2px 5px;border-radius:2px;border:1px solid;font-weight:700}
+.tg.phys{color:var(--phys);border-color:var(--phys)}
+.tg.fire{color:var(--fire);border-color:var(--fire)}
+.tg.cold{color:var(--cold);border-color:var(--cold)}
+.tg.light{color:var(--light);border-color:var(--light)}
+.tg.chaos{color:var(--chaos);border-color:var(--chaos)}
+.tg.util{color:var(--util);border-color:var(--util)}
+.tg.spirit{color:var(--spirit);border-color:var(--spirit)}
+.dflt{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--faint);border:1px solid var(--line);padding:1px 4px;border-radius:2px;font-weight:700;letter-spacing:.05em}
+.unsure{color:var(--warn);font-size:12px;font-weight:700;cursor:help}
+
+/* ---------- detail ---------- */
+aside.detail{position:sticky;top:88px;max-height:calc(100vh - 110px);overflow-y:auto;
+  background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:18px;box-shadow:var(--shadow)}
+@media(max-width:1180px){aside.detail{position:static;max-height:none;grid-column:1/-1}}
+@media(max-width:820px){aside.detail{grid-column:auto}}
+.dhead{border-bottom:1px solid var(--line-soft);padding-bottom:12px;margin-bottom:12px}
+.dhead .from{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.dhead h3{font-size:21px;font-weight:700;margin:3px 0 7px;letter-spacing:-.01em}
+.dsec{margin-top:15px}
+.dsec h5{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:0 0 6px}
+.dsec p{margin:0;font-size:13.5px;color:var(--dim);line-height:1.55}
+.dsec p em{color:var(--text);font-style:normal;font-weight:600}
+.chainlist{display:flex;flex-direction:column;gap:7px}
+.crow{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45}
+.crole{font-family:"JetBrains Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.05em;padding:2px 5px;border-radius:2px;flex:none;margin-top:2px}
+.crole.out{color:var(--good);border:1px solid var(--good)}
+.crole.in{color:var(--fire);border:1px solid var(--fire)}
+.crow b{font-weight:600;color:var(--text)}
+.crow span{color:var(--dim)}
+.xlink{
+  background:none;border:0;border-bottom:1px dotted var(--accent-2);color:var(--accent);
+  font:inherit;font-size:inherit;cursor:pointer;padding:0;text-align:left;
+}
+.xlink:hover{border-bottom-style:solid}
+.xlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.xwrap{display:flex;flex-wrap:wrap;gap:4px 2px;font-size:13px;color:var(--dim)}
+
+/* ---------- atlas ---------- */
+.chain{background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;margin-bottom:14px;overflow:hidden}
+.chain > header{padding:14px 16px 12px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+.chain h3{font-size:18px;font-weight:700;letter-spacing:-.01em;text-transform:none;color:var(--text)}
+.chain header p{margin:5px 0 0;font-size:13px;color:var(--dim);max-width:72ch;line-height:1.5}
+.flow{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch}
+@media(max-width:700px){.flow{grid-template-columns:1fr}}
+.side{padding:13px 16px;min-width:0}
+.side + .arrow + .side{border-left:1px solid var(--line-soft)}
+@media(max-width:700px){.side + .arrow + .side{border-left:0;border-top:1px solid var(--line-soft)}}
+.side h5{font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;margin:0 0 8px}
+.side.p h5{color:var(--good)}
+.side.c h5{color:var(--fire)}
+.arrow{display:grid;place-items:center;padding:0 4px;color:var(--faint);font-family:"JetBrains Mono",monospace;font-size:16px}
+@media(max-width:700px){.arrow{display:none}}
+.reflist{display:flex;flex-direction:column;gap:5px}
+.ref{font-size:13px;line-height:1.4;display:flex;gap:7px;align-items:baseline}
+.refw{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--faint);text-transform:uppercase;letter-spacing:.05em;flex:none;width:52px;text-align:right;font-weight:700}
+.chain .foot{padding:11px 16px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--dim);line-height:1.5}
+.chain .foot b{color:var(--text);font-weight:600}
+
+/* ---------- systems ---------- */
+.sblock{background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;padding:18px 20px;margin-bottom:14px}
+.sblock h3{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-.01em;text-transform:none;color:var(--text)}
+.sblock p{margin:0 0 10px;font-size:14px;color:var(--dim);max-width:72ch;line-height:1.6}
+.sblock p:last-child{margin-bottom:0}
+.sblock strong{color:var(--text);font-weight:600}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px}
+.tbl th,.tbl td{text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl th{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.tbl td:first-child{font-weight:600;color:var(--text);white-space:nowrap;padding-right:18px}
+.tbl td{color:var(--dim)}
+.scroll{overflow-x:auto}
+
+/* ---------- results ---------- */
+.rescount{font-size:13px;color:var(--dim);margin-bottom:14px}
+.empty{color:var(--dim);font-size:14px;padding:30px 0}
+
+footer.end{border-top:1px solid var(--line);padding:22px 18px 40px;max-width:1500px;margin:0 auto;font-size:12.5px;color:var(--faint);line-height:1.6}
+footer.end a{color:var(--accent)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header class="top">
+  <div class="topin">
+    <div class="brand">
+      <h1>Wraeclast Weapon Codex</h1>
+      <div class="sub">Weapon skill trees &amp; their interactions</div>
+    </div>
+    <span class="ver mono">PATCH 0.5.x · RETURN OF THE ANCIENTS</span>
+    <label class="search" for="q">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search 150+ skills, tags, states…" autocomplete="off">
+    </label>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="notice">
+    <b>How to read this codex.</b> Path of Exile 2 has no literal per-weapon passive tree. What it has is two systems that together behave like one: skills are gated behind <b>Uncut Skill Gem tiers</b> (Lv. 1 / 3 / 5 / 7 / 9 / 11 / 13) and filtered by the weapon in your hand, and the passive tree carries <b>24 Weapon Set passive points</b> that let you grow a second, separate specialisation for your off-set weapon. Each page below is one weapon's gem ladder; the <b>Interaction Atlas</b> is where the two sets meet.
+  </div>
+
+  <div class="cols">
+    <nav class="rail" id="rail" aria-label="Weapon trees"></nav>
+    <main id="main"></main>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</div>
+
+<footer class="end">
+  <p><b>Accuracy note.</b> Skill rosters and gem tiers here reflect the 0.5.x <i>Return of the Ancients</i> era and are assembled from community databases and build guides, which disagree with each other on exact numbers more often than you would hope. Entries marked <span class="unsure">†</span> are ones I could not corroborate — treat the tier as a best guess and confirm at a Gemcutting bench. Mechanics and interactions are the durable part; individual tier numbers are the part patch notes move. Swords and the Duelist are not in 0.5.x — they arrive at 1.0.</p>
+</footer>
+
+<script>
+"use strict";
+
+/* ============ DATA ============ */
+/* tag keys: phys fire cold light chaos util spirit */
+const W = [
+{
+  id:"mace", name:"Mace", sub:"One-Hand · Two-Hand", attr:"STR", cls:"Warrior",
+  tagline:"Nothing here is fast. Everything here ends the argument.",
+  identity:"Maces are the game's blunt-instrument school: enormous single hits, the best Stun buildup in the game, and near-exclusive access to Armour Break. Mace play is a setup-and-payoff loop rather than a sustained DPS stream — you spend a slow swing making an enemy vulnerable (Broken Armour, Heavy Stun), then cash that vulnerability in with a skill that scales off it.",
+  cores:[
+    {h:"Stun buildup → Heavy Stun",b:"Slams accumulate stun. At full buildup the enemy is Heavy Stunned and helpless — and that state is itself a consumable resource."},
+    {h:"Armour Break → Fully Broken",b:"Mace skills strip enemy Armour. Once Fully Broken, every physical hit you land (from either weapon set) lands far harder."},
+    {h:"Warcries exert",b:"Warcries are off-weapon buttons that empower your next few attacks and stagger packs. They cost no mana and cover the slow swings."},
+    {h:"Aftershock",b:"Slams can repeat as a delayed second detonation. Titan and Seismic Cry turn this into the mace's damage multiplier."}
+  ],
+  tiers:[
+   {t:1,name:"Foundations",note:"Everything a fresh Warrior can engrave the moment the first Uncut Gem drops.",s:[
+     {n:"Mace Strike",dflt:1,tags:["phys"],r:"The free default swing. Opens combos, builds Stun, costs nothing."},
+     {n:"Boneshatter",tags:["phys","util"],r:"Hits harder into stunned targets and consumes a Heavy Stun to erupt in an area."},
+     {n:"Rolling Slam",tags:["phys"],r:"Two-stage combo — wind-up swing, then a far heavier follow-through. Premier stun engine."},
+     {n:"Shield Charge",tags:["phys","util"],r:"Charge behind your shield. Traversal, knockback, and stun in one button. Needs a shield."}
+   ]},
+   {t:3,name:"The break and the leap",note:"Armour Break enters the kit — this is the tier where mace stops being a stick.",s:[
+     {n:"Armour Breaker",tags:["phys"],r:"A dedicated downward blow that shreds Armour, detonating against a fully Broken target."},
+     {n:"Leap Slam",tags:["phys"],r:"Leap to a point and slam on landing. Gap-closer that also detonates ground effects."},
+     {n:"Seismic Cry",tags:["util"],r:"Warcry that grants your next slam an Aftershock and staggers the pack."},
+     {n:"Shield Bash",unsure:1,tags:["phys","util"],r:"Short-range shove with outsized stun buildup."}
+   ]},
+   {t:5,name:"Committed swings",note:"Skills with real wind-up. You are trading mobility for a number.",s:[
+     {n:"Sunder",tags:["phys"],r:"Slow overhead that cracks the ground in a line. Carries flat added attack time — attack speed barely moves it."},
+     {n:"Perfect Strike",tags:["fire"],r:"Charged swing with a timing window. Released on the beat it converts into a huge Fire hit."},
+     {n:"Intimidating Cry",tags:["util"],r:"Warcry that cuts enemy damage and exerts your following attacks."},
+     {n:"Molten Blast",tags:["fire"],r:"Slam that sprays molten projectiles outward — mace's answer to ranged chip damage."},
+     {n:"Shockwave Totem",tags:["phys","util"],r:"Totem that slams on its own timer while you reposition."}
+   ]},
+   {t:7,name:"Terrain and fire",note:"The mace starts leaving objects on the battlefield for later skills to break.",s:[
+     {n:"Earthshatter",tags:["phys"],r:"Raises crystal spires from the ground; your other slams shatter them for a second wave of area damage."},
+     {n:"Infernal Cry",tags:["fire","util"],r:"Warcry applying Combustion — affected enemies become fire bombs when they die."},
+     {n:"Ancestral Warrior Totem",tags:["phys","util"],r:"Totem that attacks using your own melee weapon and skill. Doubles your setup rate."},
+     {n:"Resonating Shield",tags:["util"],r:"Rings your shield for Armour and a damaging pulse."}
+   ]},
+   {t:9,name:"Ground control",note:"Delayed detonations. Lead your targets.",s:[
+     {n:"Earthquake",tags:["phys"],r:"Slam that leaves a delayed aftershock erupting under the same ground a beat later."},
+     {n:"Volcanic Fissure",tags:["fire"],r:"Tears a magma fissure forward that erupts along its length."},
+     {n:"Rallying Cry",tags:["util"],r:"Warcry granting damage to you, your allies and your minions."}
+   ]},
+   {t:11,name:"Momentum",note:"Channelled and charge-up skills that reward standing still — or refusing to.",s:[
+     {n:"Stampede",tags:["phys"],r:"Channelled charge that builds speed and ends in a shockwave."},
+     {n:"Supercharged Slam",tags:["phys"],r:"Channel to load a slam; the longer the hold, the wider and heavier the impact."},
+     {n:"Vengeful Cry",unsure:1,tags:["util"],r:"Warcry that punishes recent damage taken."}
+   ]},
+   {t:13,name:"The capstone",note:"One skill. One cooldown. One corpse.",s:[
+     {n:"Hammer of the Gods",tags:["phys"],r:"Calls a colossal hammer onto a single point after a long wind-up. The game's signature boss-deleter."}
+   ]}
+  ]
+},
+{
+  id:"quarterstaff", name:"Quarterstaff", sub:"Two-Hand · Monk", attr:"DEX / INT", cls:"Monk",
+  tagline:"Hit fast enough and the elements do the arithmetic for you.",
+  identity:"The quarterstaff is the multi-hit school. Individual hits are small; the tree is built so that hit <em>count</em> — not hit size — is the scaling stat. Nearly every payoff on the staff (Power Charges, Freeze buildup, Shock, and above all the Tempest Bell) reads hits-per-second rather than damage-per-hit, which is why the staff is the best partner in the game for anything that wants a fast, reliable trigger.",
+  cores:[
+    {h:"Power Charges",b:"Generated by executes and crits, spent by Falling Thunder and Charged Staff. The staff is the only weapon that both makes and burns them on demand."},
+    {h:"Combo strikes",b:"Ice Strike and Tempest Flurry escalate on repeated use — the third and fourth presses are different, better skills. Interrupting the chain resets it."},
+    {h:"The Bell",b:"Tempest Bell is a placed object that damages everything nearby every time it is struck. It converts attack speed directly into area damage."},
+    {h:"Ailment engine",b:"Freeze and Shock come up fast here, which is what makes the staff a natural Set I for a Set II that consumes ailments."}
+  ],
+  tiers:[
+   {t:1,name:"Openers",note:"Two of these three also work with empty hands.",s:[
+     {n:"Quarterstaff Strike",dflt:1,tags:["phys"],r:"Free default combo attack; the baseline all the strike skills improve on."},
+     {n:"Killing Palm",tags:["phys","util"],r:"Instantly executes a low-life enemy and grants a Power Charge. Works Unarmed."},
+     {n:"Siphoning Strike",unsure:1,tags:["util"],r:"A draining strike that returns resources and feeds your charge economy."}
+   ]},
+   {t:3,name:"The elemental turn",note:"Where the Monk stops being a stick-fighter.",s:[
+     {n:"Falling Thunder",tags:["light"],r:"Slams a charged staff down for cone damage, spending each Power Charge to fire a lightning projectile from the impact."},
+     {n:"Tempest Bell",tags:["util"],r:"Places a bell. Every attack that strikes it damages everything nearby — from any weapon, including your off-set."},
+     {n:"Staggering Palm",tags:["phys","util"],r:"Dash-strike that Heavy Stuns enemies Primed for Stun; on stunning, your attacks fire piercing projectiles. Works Unarmed."}
+   ]},
+   {t:5,name:"The two engines",note:"Effectively a fork in the road: cold sustain or lightning burst.",s:[
+     {n:"Ice Strike",tags:["cold"],r:"Rapid three-hit cold chain with heavy Freeze buildup. The default Bell-ringer."},
+     {n:"Tempest Flurry",tags:["light"],r:"Escalating strike chain — the third use strikes three times, the fourth calls a Shocking bolt down."}
+   ]},
+   {t:7,name:"Infusion",note:"Skills that change the character of every other attack you make.",s:[
+     {n:"Charged Staff",tags:["light","util"],r:"Spends Power Charges to sheathe the staff in lightning, adding lightning damage and width to every strike."},
+     {n:"Gathering Storm",tags:["light"],r:"Winds up while you move and discharges into your next strike; distance travelled scales the hit."}
+   ]},
+   {t:9,name:"Area conversion",note:"Turning single-target combo damage into pack clear.",s:[
+     {n:"Whirling Assault",tags:["phys"],r:"Spins through a line of enemies hitting repeatedly — a mobile Bell-ringer."},
+     {n:"Storm Wave",unsure:1,tags:["light"],r:"Sends a lightning wave forward from your strike."}
+   ]},
+   {t:11,name:"Blink-strike",note:"",s:[
+     {n:"Flicker Strike",unsure:1,tags:["phys","util"],r:"Teleports you to a nearby enemy and strikes; chains repeatedly while you can pay Frenzy Charges."}
+   ]}
+  ]
+},
+{
+  id:"unarmed", name:"Unarmed", sub:"No weapon · Hollow Palm", attr:"DEX / INT", cls:"Monk",
+  tagline:"A sub-tree of the quarterstaff, with the weapon removed on purpose.",
+  identity:"Unarmed is not a separate gem list so much as a permission flag. A handful of staff skills read <em>\"Quarterstaff or Unarmed\"</em> and remain usable with empty hands, and the passive tree's Hollow Palm Technique pays you an enormous amount of added damage for keeping them empty. The result is a real build with an unusual constraint: your weapon-set swap can still carry passive points, but it cannot carry a weapon.",
+  cores:[
+    {h:"Hollow Palm Technique",b:"Keystone granting large added damage and attack speed while unarmed. It is the entire reason the archetype exists."},
+    {h:"Shared skill pool",b:"Killing Palm, Staggering Palm and Flicker Strike carry the Unarmed flag; the elemental strike engines (Ice Strike, Tempest Flurry) do not."},
+    {h:"Martial Artist",b:"The Monk ascendancy built around unarmed and combo play, leaning on charges and movement rather than weapon damage."},
+    {h:"Weapon sets still matter",b:"Set II can hold no weapon and still hold 24 specialised passive points — an unarmed character can spec a whole second defensive tree."}
+  ],
+  tiers:[
+   {t:1,name:"Usable with empty hands",note:"Tiers mirror the quarterstaff ladder; only the Unarmed-flagged skills are listed.",s:[
+     {n:"Killing Palm",tags:["phys","util"],r:"Executes a low-life enemy for a Power Charge. The unarmed opener."}
+   ]},
+   {t:3,name:"",note:"",s:[
+     {n:"Staggering Palm",tags:["phys","util"],r:"Dash-strike, Heavy Stun on Primed targets, then piercing projectiles on your attacks."},
+     {n:"Tempest Bell",tags:["util"],r:"The bell does not care what struck it — unarmed flurries ring it as well as a staff does."}
+   ]},
+   {t:11,name:"",note:"",s:[
+     {n:"Flicker Strike",unsure:1,tags:["phys","util"],r:"Frenzy-fuelled blink chain; the unarmed build's clear speed tool."}
+   ]}
+  ]
+},
+{
+  id:"bow", name:"Bow", sub:"Two-Hand · Ranger", attr:"DEX", cls:"Ranger / Huntress",
+  tagline:"Set the board, mark the target, then release everything at once.",
+  identity:"Bows are the setup-and-detonate school at range. The tree contains very few skills that simply do damage; most of them install something — a gas cloud, a lightning rod, a mark, a ballista — that a later shot converts into a much larger number. This is also the weapon most dependent on a second weapon set, because the bow's best payoff (igniting its own gas) is easier to buy from a crossbow than from itself.",
+  cores:[
+    {h:"Marks",b:"A single marked enemy at a time. The Mark is consumed by a Critical Hit for burst damage and, usually, a Frenzy Charge back."},
+    {h:"Frenzy Charge loop",b:"Sniper's Mark pays charges; Rain of Arrows spends them for extra arrows. The loop is the bow's sustained clear."},
+    {h:"Deployables",b:"Artillery Ballista and Stormcaller Arrow keep firing while you do something else — bow damage that costs no attack time."},
+    {h:"Chaining and pierce",b:"Lightning Arrow chains off walls as readily as enemies, which makes indoor tilesets better for bows, not worse."}
+  ],
+  tiers:[
+   {t:1,name:"Bare essentials",note:"",s:[
+     {n:"Bow Shot",dflt:1,tags:["phys"],r:"The free default shot. Precise, cheap, and the only thing you have for a while."},
+     {n:"Escape Shot",tags:["cold","util"],r:"Leap backwards and fire; the ground you vacated is Chilled or Frozen. Defence and setup in one."},
+     {n:"Vine Arrow",tags:["chaos","util"],r:"Entangles the area, slowing and rooting what walks through it."}
+   ]},
+   {t:3,name:"The clouds and the mark",note:"Gas Arrow is the single most important cross-weapon skill in the game.",s:[
+     {n:"Gas Arrow",tags:["chaos"],r:"Leaves a lingering Gas cloud that does little on its own — and enormous damage the instant any Fire hit ignites it."},
+     {n:"Freezing Salvo",tags:["cold"],r:"A spread of slow-falling shards that Chill and Freeze a whole pack."},
+     {n:"Sniper's Mark",tags:["util"],r:"Marks a target; the next Critical Hit consumes the Mark for bonus damage and a Frenzy Charge."}
+   ]},
+   {t:5,name:"Workhorses",note:"The two skills most bow characters actually level with.",s:[
+     {n:"Lightning Arrow",tags:["light"],r:"On hitting an enemy or a wall, releases chaining lightning beams to everything nearby."},
+     {n:"Poisonburst Arrow",tags:["chaos"],r:"Embeds in the target and bursts into a poison cloud shortly after."}
+   ]},
+   {t:7,name:"Installations",note:"Damage that persists after you stop pressing the button.",s:[
+     {n:"Stormcaller Arrow",tags:["light"],r:"Plants a lightning rod; your lightning hits arc to it and it discharges over an area."},
+     {n:"Snipe",tags:["util"],r:"Channel to load a linked bow skill, then release it empowered by the stages you held."},
+     {n:"Artillery Ballista",tags:["phys","util"],r:"Deploys a ballista that arcs arrows at your targets independently of your own attacks."}
+   ]},
+   {t:9,name:"Saturation",note:"",s:[
+     {n:"Rain of Arrows",tags:["phys"],r:"A hail of arrows over an area; consumes a Frenzy Charge to fire considerably more."},
+     {n:"Voltaic Mark",tags:["light","util"],r:"Marked enemy discharges lightning into nearby foes when the Mark is consumed."}
+   ]},
+   {t:11,name:"Single-target",note:"",s:[
+     {n:"Barrage",tags:["phys"],r:"Plant your feet and fire a rapid sequence into one target. The bow's boss button — and a superb Bell-ringer."}
+   ]}
+  ]
+},
+{
+  id:"crossbow", name:"Crossbow", sub:"Two-Hand · Mercenary", attr:"STR / DEX", cls:"Mercenary",
+  tagline:"Two clips, a reload, and a grenade for everything in between.",
+  identity:"The crossbow is the only weapon with a resource loop built into its skills rather than its passives. Ammunition skills load a clip; firing empties it; pressing the skill again reloads. The whole tree is designed around covering that reload — with a second ammunition type, with grenades, or with Emergency Reload. It is also the game's best supplier of <em>detonation</em>, which is why it slots into a second weapon set for almost every other class.",
+  cores:[
+    {h:"Ammunition & clips",b:"Each Ammunition skill has its own clip. Alternating two ammo types means one is always loaded while the other is spent."},
+    {h:"Grenades & fuses",b:"Grenades are thrown, not fired — they ignore your clip entirely and detonate on a fuse, so they are free actions during a reload."},
+    {h:"Detonation",b:"Explosive Shot and the fire grenades ignite gas, oil and embedded munitions. This is what other weapon trees buy a crossbow for."},
+    {h:"Ailment payoff",b:"Shockburst Rounds converts Shock into damage rather than merely benefiting from it — a consumer, not a beneficiary."}
+  ],
+  tiers:[
+   {t:1,name:"Load and lob",note:"",s:[
+     {n:"Crossbow Shot",dflt:1,tags:["phys"],r:"The free default bolt. No clip, no ceremony."},
+     {n:"Armour Piercing Rounds",tags:["phys"],r:"A clip of rapid bolts that Break Armour. The cheapest Armour Break in the game."},
+     {n:"Explosive Grenade",tags:["fire"],r:"Lobbed, fused, and loud. Your first reliable Fire detonator."},
+     {n:"Emergency Reload",tags:["util"],r:"Instantly reloads. The pivot that makes a two-clip rotation seamless."}
+   ]},
+   {t:3,name:"Specialist clips",note:"Each of these leaves something behind for a later hit to use.",s:[
+     {n:"Fragmentation Rounds",tags:["phys"],r:"Bolts that fragment on impact, shredding a cone behind the target."},
+     {n:"Permafrost Bolts",tags:["cold"],r:"Rapid cold bolts with strong Chill and Freeze buildup."},
+     {n:"Stormblast Bolts",tags:["light"],r:"Embeds charged munitions in enemies. Inert until an explosive hit sets them off."},
+     {n:"Oil Grenade",tags:["chaos"],r:"Coats enemies and ground in oil, which then catches fire spectacularly."},
+     {n:"Flash Grenade",tags:["light","util"],r:"Blinds and Dazes a pack. Pure crowd control."}
+   ]},
+   {t:5,name:"The mainstays",note:"",s:[
+     {n:"Galvanic Shards",tags:["light"],r:"A clip of bolts that fragment in flight, releasing chaining lightning beams on hit. Best-in-class Shock application."},
+     {n:"Glacial Bolt",tags:["cold"],r:"Bolts that build an ice wall; shattering the wall damages everything around it."},
+     {n:"High Velocity Rounds",tags:["phys"],r:"Long-range piercing bolts for single targets and tight lines."},
+     {n:"Gas Grenade",tags:["chaos"],r:"Leaves a Gas cloud. Ignite it yourself or with anything else you own."}
+   ]},
+   {t:7,name:"Fire and detonation",note:"The tier that makes the crossbow a partner rather than a weapon.",s:[
+     {n:"Explosive Shot",tags:["fire"],r:"One heavy explosive bolt. Detonates embedded munitions, gas clouds and oil — from any source."},
+     {n:"Incendiary Shot",tags:["fire"],r:"Fire bolts that leave burning ground behind the impact."},
+     {n:"Voltaic Grenade",tags:["light"],r:"Leaves a lingering lightning field that shocks everything inside it."}
+   ]},
+   {t:9,name:"Ailment payoff",note:"",s:[
+     {n:"Shockburst Rounds",tags:["light"],r:"Deals far more damage to Shocked enemies, consuming the Shock to do it."},
+     {n:"Hailstorm Rounds",tags:["cold"],r:"Saturating cold fire over an area."},
+     {n:"Cluster Grenade",tags:["fire"],r:"Splits into smaller grenades on detonation, blanketing a pack."}
+   ]},
+   {t:11,name:"Heavy ordnance",note:"",s:[
+     {n:"Plasma Blast",tags:["light"],r:"Charges a plasma round that detonates violently on impact."},
+     {n:"Siege Cascade",unsure:1,tags:["phys"],r:"Arcing siege fire that walks across an area."}
+   ]},
+   {t:13,name:"Emplacement",note:"",s:[
+     {n:"Mortar Cannon",unsure:1,tags:["fire"],r:"Sets up a mortar for sustained long-range bombardment."}
+   ]}
+  ]
+},
+{
+  id:"spear", name:"Spear", sub:"One-Hand · Huntress", attr:"DEX / STR", cls:"Huntress",
+  tagline:"A melee weapon you are also allowed to throw.",
+  identity:"The spear is the most mode-switching weapon in the game: the same gem list contains close-range strike combos and thrown projectiles, and the tree expects you to move between them within a single fight. Its two signature mechanics — <em>lodging</em> spears in enemies for later detonation, and <em>consuming elemental ailments</em> for damage — both make the spear a natural finisher for whatever your other weapon set has been applying.",
+  cores:[
+    {h:"Throw and recall",b:"Thrown spear skills return to your hand. Ranged pressure without giving up your melee combo chain."},
+    {h:"Lodged spears",b:"Explosive Spear and Rapid Assault leave spears embedded in targets. A later hit — especially Thunderous Leap — sets them all off at once."},
+    {h:"Bleed economy",b:"Rake applies Bleeding; Blood Hunt consumes it for a large hit and a Frenzy Charge. A self-contained two-button loop."},
+    {h:"Ailment consumption",b:"Elemental Sundering converts Shock, Chill/Freeze and Ignite on nearby enemies into direct damage of each type."},
+    {h:"Parry",b:"Paired with a buckler, the Huntress parries rather than blocks — a timed defence that opens counter-windows."}
+  ],
+  tiers:[
+   {t:1,name:"Reach",note:"",s:[
+     {n:"Spear Throw",dflt:1,tags:["phys"],r:"The free default: hurl the spear and recall it. Your ranged option from minute one."},
+     {n:"Explosive Spear",tags:["fire"],r:"Lodges an explosive spear in the target, detonated by your next spear hit."},
+     {n:"Disengage",tags:["util"],r:"Vault backwards to open the distance your thrown skills want."}
+   ]},
+   {t:3,name:"Close quarters",note:"",s:[
+     {n:"Rake",tags:["phys"],r:"Low sweeping strike that causes Bleeding — the front half of the blood loop."},
+     {n:"Whirling Slash",tags:["phys","util"],r:"Circular slash raising a whirlwind that Slows and Blinds; leaving the area collapses it for damage and Knockback."},
+     {n:"Twister",tags:["util"],r:"Spawns a roaming twister that drags enemies together."}
+   ]},
+   {t:5,name:"Elemental throws",note:"",s:[
+     {n:"Rapid Assault",tags:["phys"],r:"Fast flurry that lodges spearheads in the target for later detonation."},
+     {n:"Lightning Spear",tags:["light"],r:"Hurls a spear of lightning that Shocks on impact."},
+     {n:"Fangs of Frost",tags:["cold"],r:"Cold strikes with strong Freeze buildup."},
+     {n:"Storm Lance",tags:["light"],r:"Thrown lance that discharges over an area."}
+   ]},
+   {t:7,name:"Payoffs",note:"",s:[
+     {n:"Blood Hunt",tags:["phys"],r:"Deals heavily to Bleeding enemies, consuming the Bleed and returning Frenzy."},
+     {n:"Spearfield",tags:["phys","util"],r:"Scatters spears across an area that damage anything moving through it."},
+     {n:"Glacial Lance",tags:["cold"],r:"Thrown ice lance that shatters on impact."},
+     {n:"Bloodhound's Mark",tags:["phys","util"],r:"Marks a target so your hits track and bleed it."}
+   ]},
+   {t:9,name:"Detonators",note:"",s:[
+     {n:"Thunderous Leap",tags:["light"],r:"Leap and land in a thunderclap — the cleanest way to set off every lodged spear at once."},
+     {n:"Whirlwind Lance",tags:["phys"],r:"Sweeping spin that hits everything in reach."},
+     {n:"Primal Strikes",tags:["phys"],r:"Escalating melee combo for sustained single-target pressure."}
+   ]},
+   {t:11,name:"Ailment consumption",note:"The tier that repays a second weapon set.",s:[
+     {n:"Elemental Sundering",tags:["fire","cold","light"],r:"Consumes elemental Ailments on nearby enemies, dealing damage of every type it strips."},
+     {n:"Wind Serpent's Fury",tags:["util"],r:"Serpentine wind projectiles that weave through a pack."}
+   ]},
+   {t:13,name:"The capstone",note:"",s:[
+     {n:"Spear of Solaris",tags:["fire"],r:"Calls a sun-spear down on a marked point. The Huntress's answer to Hammer of the Gods."}
+   ]}
+  ]
+},
+{
+  id:"flail", name:"Flail", sub:"One-Hand · STR / INT", attr:"STR / INT", cls:"—",
+  tagline:"The item class is in the game. The tree around it is not, yet.",
+  identity:"Flails are a one-handed martial weapon class requiring Strength and Intelligence, built around wide radial blows with an elemental character. They exist as bases and as uniques — but the Strength/Intelligence class they were clearly shaped for is not released in 0.5.x, and I could not corroborate a dedicated flail gem roster from any source I could reach. Rather than invent one, this page states what is verifiable and stops.",
+  unverified:"No dedicated flail skill ladder is documented here because I could not confirm one. If your Gemcutting bench shows flail-gated skills, that list is real and this page is incomplete — trust the bench.",
+  cores:[
+    {h:"Attribute identity",b:"Strength with a measure of Intelligence — the hybrid axis that in Path of Exile 1 belonged to the Templar."},
+    {h:"Radial blows",b:"Flail attacks arc widely rather than landing on a point, giving them natural pack coverage for a one-hander."},
+    {h:"One-handed",b:"Leaves the off-hand free for a shield or focus, so flail characters inherit the shield skills and block mechanics wholesale."},
+    {h:"Cross-set glue",b:"Until a native roster exists, the practical use of a flail is a Set II that carries different passive specialisation and item mods rather than different skills."}
+  ],
+  tiers:[]
+},
+{
+  id:"caster", name:"Wand · Sceptre · Staff", sub:"Caster weapons", attr:"INT", cls:"Witch / Sorceress",
+  tagline:"These weapons don't gate gems. They grant skills outright.",
+  identity:"Caster weapons work on a completely different principle from martial weapons, and it catches people out. Wands, sceptres and staves do not unlock a gem list — instead each <em>base type</em> carries an inherent granted skill as an implicit, scaling its level and attribute requirements off the item's item level. Your spell list comes from gems that need no weapon at all; what the weapon supplies is one free skill, plus the damage and Spirit that everything else scales from.",
+  cores:[
+    {h:"Granted skills, not gems",b:"Power Siphon, Volatile Dead and their siblings arrive on the weapon base itself. Changing weapon changes that skill."},
+    {h:"Sceptres carry Spirit",b:"Spirit is the reservation resource for Heralds, banners and persistent minions — and it leaves with the weapon when you swap sets."},
+    {h:"Staves scale spells",b:"Two-handed, no off-hand, heaviest spell damage. The straightforward caster choice."},
+    {h:"The swap caveat",b:"Anything reserved by Spirit from a weapon stops when that weapon is not in the active set. Plan Set II around this, not against it."}
+  ],
+  tiers:[
+   {t:1,name:"Representative granted skills",note:"These come from weapon bases, not from a Gemcutting bench — tiers do not apply.",s:[
+     {n:"Power Siphon",tags:["light","util"],r:"Wand implicit. Fires at nearby enemies and returns Power Charges on kill."},
+     {n:"Volatile Dead",tags:["fire"],r:"Wand implicit. Consumes nearby corpses, turning each into a seeking fire orb."}
+   ]}
+  ]
+},
+{
+  id:"shield", name:"Shield & Buckler", sub:"Off-hand", attr:"STR / DEX", cls:"Warrior / Huntress",
+  tagline:"An off-hand that carries its own small skill list.",
+  identity:"Shields are the one off-hand that gates skills the way a weapon does: several martial skills check for a shield rather than for a weapon type, so they appear in your Gemcutting list only while one is equipped. Shields and bucklers then diverge sharply — a shield <em>blocks</em>, converting a percentage of hits into nothing, while a buckler <em>parries</em>, a timed defence that rewards reading the attack and opens a counter-window.",
+  cores:[
+    {h:"Block",b:"Passive chance to negate a hit entirely. Scales from the shield base and the passive tree; Raise Shield converts movement into guaranteed coverage."},
+    {h:"Parry",b:"Buckler-specific and timing-based. Not a percentage — a window. The Huntress's defensive identity."},
+    {h:"Shield-gated skills",b:"Shield Charge, Shield Bash and Resonating Shield check for the off-hand, so a weapon-set swap can remove them mid-fight."},
+    {h:"Set asymmetry",b:"A common pattern: Set I one-hand plus shield for survivability, Set II two-hander for damage, with the passives split to match."}
+  ],
+  tiers:[
+   {t:1,name:"Shield-gated skills",note:"Tiers follow the parent weapon's ladder; grouped here for reference.",s:[
+     {n:"Shield Charge",tags:["phys","util"],r:"Charge, knock back, stun. Traversal and opener in one."},
+     {n:"Raise Shield",dflt:1,tags:["util"],r:"Hold to guarantee block coverage in the facing direction at the cost of movement."},
+     {n:"Shield Bash",unsure:1,tags:["phys","util"],r:"Short shove with heavy stun buildup."},
+     {n:"Resonating Shield",tags:["util"],r:"Rings the shield for Armour and a damaging pulse."}
+   ]}
+  ]
+}
+];
+
+/* Interaction Atlas: producer -> consumable state -> consumer */
+const CHAINS = [
+{
+  id:"gas", name:"Gas Cloud", hue:"chaos",
+  d:"A lingering cloud that deals almost nothing by itself and detonates for an enormous Fire hit the moment any Fire damage touches it. The most valuable cross-weapon interaction in the game, and the clearest argument for pairing Bow with Crossbow.",
+  p:[["bow","Gas Arrow"],["crossbow","Gas Grenade"],["bow","Poisonburst Arrow"]],
+  c:[["crossbow","Explosive Shot"],["crossbow","Incendiary Shot"],["crossbow","Explosive Grenade"],["mace","Perfect Strike"],["mace","Infernal Cry"],["mace","Volcanic Fissure"],["spear","Explosive Spear"],["spear","Spear of Solaris"]],
+  note:"A Bow in Set I and a Crossbow in Set II is the canonical build: lay clouds at range, swap, and light them. But note the mace and spear entries — a Warrior carrying a bow purely for Gas Arrow is a legitimate, and frequently overlooked, use of 24 Weapon Set passive points."
+},
+{
+  id:"armour", name:"Broken Armour", hue:"phys",
+  d:"Armour Break strips an enemy's physical mitigation; enough of it leaves them Fully Broken. Every physical hit you land afterwards — from either weapon set, from any weapon — benefits. It is the single most transferable setup in the game.",
+  p:[["mace","Armour Breaker"],["mace","Sunder"],["crossbow","Armour Piercing Rounds"],["spear","Rake"]],
+  c:[["mace","Hammer of the Gods"],["mace","Earthquake"],["mace","Boneshatter"],["crossbow","High Velocity Rounds"],["crossbow","Fragmentation Rounds"],["spear","Blood Hunt"],["bow","Barrage"]],
+  note:"Because Armour Piercing Rounds is a Tier 1 crossbow skill, any character willing to spend a weapon set on a crossbow gets mace-grade Armour Break without touching Strength requirements on their main weapon. The Armour Explosion support then converts the broken state itself into area damage."
+},
+{
+  id:"stun", name:"Heavy Stun", hue:"util",
+  d:"Stun buildup accumulates on every hit; at full buildup the enemy is Heavy Stunned. Critically, Heavy Stun is not just a crowd-control state — it is a resource that specific skills spend.",
+  p:[["mace","Rolling Slam"],["mace","Sunder"],["mace","Leap Slam"],["mace","Shield Bash"],["quarterstaff","Staggering Palm"],["shield","Shield Charge"]],
+  c:[["mace","Boneshatter"],["quarterstaff","Staggering Palm"]],
+  note:"Boneshatter is the archetypal consumer: it detonates the stun for area damage rather than letting it tick away. Staggering Palm sits on both sides — it applies Heavy Stun to enemies already Primed for Stun, and converts having stunned into a projectile buff on your subsequent attacks. The Cast on Melee Stun support is the bridge out of the martial trees entirely: it turns mace stuns into triggered spells cast from a caster weapon."
+},
+{
+  id:"power", name:"Power Charges", hue:"light",
+  d:"A stacking charge generated by executes and critical strikes and spent for burst. The quarterstaff is the only weapon that both produces and consumes them on demand, which is why the Monk loop feels self-contained in a way other weapons do not.",
+  p:[["quarterstaff","Killing Palm"],["quarterstaff","Siphoning Strike"],["caster","Power Siphon"]],
+  c:[["quarterstaff","Falling Thunder"],["quarterstaff","Charged Staff"]],
+  note:"The classic Monk rotation is Killing Palm into a pack of weakened enemies to bank charges, then Falling Thunder to spend every charge as a lightning projectile. Charged Staff is the alternative sink: instead of one burst, it converts the charges into a sustained damage conversion on all your strikes."
+},
+{
+  id:"frenzy", name:"Frenzy Charges", hue:"cold",
+  d:"Attack and movement speed charges. Unlike Power Charges these are generated mostly by <em>paying off</em> another mechanic — consuming a mark, consuming a bleed, or converting an ailment.",
+  p:[["bow","Sniper's Mark"],["spear","Blood Hunt"]],
+  c:[["bow","Rain of Arrows"],["quarterstaff","Flicker Strike"]],
+  note:"Combat Frenzy is the cross-tree glue here: a Spirit skill that converts the elemental ailments you inflict into Frenzy Charges. That turns any freeze- or shock-heavy weapon set into a charge generator for a completely different weapon set — a quarterstaff applying Freeze in Set I can fund Rain of Arrows in Set II."
+},
+{
+  id:"shock", name:"Shock", hue:"light",
+  d:"An ailment that increases the damage the shocked enemy takes from all sources. Almost every weapon can apply it; only two skills in the game are built to <em>spend</em> it.",
+  p:[["quarterstaff","Tempest Flurry"],["quarterstaff","Charged Staff"],["quarterstaff","Falling Thunder"],["bow","Lightning Arrow"],["bow","Voltaic Mark"],["bow","Stormcaller Arrow"],["crossbow","Galvanic Shards"],["crossbow","Stormblast Bolts"],["crossbow","Voltaic Grenade"],["spear","Lightning Spear"],["spear","Storm Lance"]],
+  c:[["crossbow","Shockburst Rounds"],["spear","Elemental Sundering"]],
+  note:"Galvanic Shards into Shockburst Rounds is a two-clip crossbow rotation that never leaves the weapon — apply with the chaining clip, cash in with the burst clip, Emergency Reload to skip the downtime. Elemental Sundering is the cross-set version: let Set I paint the pack with Shock, Chill and Ignite, then swap to a spear and consume all three at once."
+},
+{
+  id:"cold", name:"Chill & Freeze", hue:"cold",
+  d:"Chill slows; enough buildup Freezes outright. Freeze is both a defensive layer and a consumable, and it is the most reliably applied ailment in the game because so many multi-hit skills carry cold.",
+  p:[["quarterstaff","Ice Strike"],["spear","Fangs of Frost"],["spear","Glacial Lance"],["crossbow","Permafrost Bolts"],["crossbow","Glacial Bolt"],["crossbow","Hailstorm Rounds"],["bow","Freezing Salvo"],["bow","Escape Shot"]],
+  c:[["spear","Elemental Sundering"],["quarterstaff","Tempest Bell"]],
+  note:"A frozen Tempest Bell adds cold to what its strikes deal — the bell inherits the element you have been feeding it, which is why Ice Strike and the bell are so often run together. Combat Frenzy also converts these ailments into Frenzy Charges, making a cold Set I into the fuel supply for an entirely unrelated Set II."
+},
+{
+  id:"fire", name:"Ignite & Burning Ground", hue:"fire",
+  d:"Fire's contribution to the interaction economy is less about the ailment's own damage and more about the fact that fire is the universal detonator: gas, oil and corpses all answer to it.",
+  p:[["mace","Perfect Strike"],["mace","Infernal Cry"],["mace","Volcanic Fissure"],["crossbow","Incendiary Shot"],["crossbow","Explosive Grenade"],["crossbow","Cluster Grenade"],["spear","Explosive Spear"],["spear","Spear of Solaris"]],
+  c:[["spear","Elemental Sundering"]],
+  note:"Read this chain alongside Gas Cloud and Oil. Any skill listed as a producer here is simultaneously a detonator for two other chains — which is why a single fire skill in a second weapon set repays its slot several times over."
+},
+{
+  id:"lodged", name:"Lodged & Embedded Munitions", hue:"phys",
+  d:"Several skills leave physical objects stuck in an enemy — spears, charged bolts, embedded arrows. They deal nothing while lodged and everything when something sets them off.",
+  p:[["spear","Explosive Spear"],["spear","Rapid Assault"],["crossbow","Stormblast Bolts"],["bow","Poisonburst Arrow"]],
+  c:[["spear","Thunderous Leap"],["crossbow","Explosive Shot"],["crossbow","Explosive Grenade"]],
+  note:"The rhythm is the same in both trees: stack the target with as many lodged objects as the fight allows, then detonate once. Thunderous Leap is the cleanest detonator because it also repositions you; Explosive Shot is the strongest because it can be fired from an entirely different weapon set while the spears are still in the target."
+},
+{
+  id:"terrain", name:"Walls, Crystals & Spires", hue:"cold",
+  d:"Placed terrain that blocks movement and then shatters. Distinct from lodged munitions because it affects the battlefield rather than a single enemy.",
+  p:[["crossbow","Glacial Bolt"],["mace","Earthshatter"]],
+  c:[["mace","Sunder"],["mace","Earthquake"],["mace","Leap Slam"],["mace","Boneshatter"],["crossbow","Fragmentation Rounds"]],
+  note:"Earthshatter into any other slam is a self-contained mace combo — the spires are free area damage attached to an attack you were making anyway. Glacial Bolt's wall does double duty as a physical barrier in a corridor before you shatter it."
+},
+{
+  id:"bell", name:"The Tempest Bell", hue:"util",
+  d:"A placed object that damages everything nearby every single time it is struck. It reads hit count, not hit size — and it does not check what struck it.",
+  p:[["quarterstaff","Tempest Bell"]],
+  c:[["quarterstaff","Ice Strike"],["quarterstaff","Tempest Flurry"],["quarterstaff","Whirling Assault"],["crossbow","Galvanic Shards"],["crossbow","Armour Piercing Rounds"],["bow","Barrage"],["unarmed","Flicker Strike"]],
+  note:"The bell persists once placed, so swapping weapon sets does not remove it. That makes it the most abusable cross-tree interaction in the codex: place the bell with a quarterstaff, swap to a crossbow, and empty a clip of Galvanic Shards into it. Ancestral Call multiplies the setup by spawning several bells at once."
+},
+{
+  id:"marks", name:"Marks", hue:"spirit",
+  d:"A single-target debuff, one at a time, that pays out when consumed by the right kind of hit. Marks are how ranged trees convert precision into resources.",
+  p:[["bow","Sniper's Mark"],["bow","Voltaic Mark"],["spear","Bloodhound's Mark"]],
+  c:[["bow","Snipe"],["bow","Barrage"],["bow","Rain of Arrows"]],
+  note:"Sniper's Mark wants a Critical Hit to consume it, which pairs it naturally with Snipe's charged release or with a high-crit weapon in the other set. Voltaic Mark converts the same payout into pack damage instead of Frenzy, making it the clear-speed variant of the same button."
+},
+{
+  id:"corpses", name:"Corpses", hue:"fire",
+  d:"Dead enemies are a resource in two different trees, which almost never overlap in practice — and that is exactly the gap a weapon set swap exists to close.",
+  p:[["mace","Infernal Cry"]],
+  c:[["caster","Volatile Dead"]],
+  note:"Infernal Cry's Combustion turns a pack into delayed-action bombs; Volatile Dead consumes corpses directly into seeking fire orbs. A Warrior with a wand in Set II can run both halves of a corpse economy that neither tree supports alone."
+},
+{
+  id:"ammo", name:"Clips & Reload", hue:"phys",
+  d:"Not an enemy state but a self-state, and the only resource loop of its kind. Ammunition skills load a clip; firing spends it; pressing the skill again reloads. Managing that downtime is the crossbow's entire skill expression.",
+  p:[["crossbow","Armour Piercing Rounds"],["crossbow","Galvanic Shards"],["crossbow","Permafrost Bolts"],["crossbow","Fragmentation Rounds"],["crossbow","Stormblast Bolts"],["crossbow","High Velocity Rounds"]],
+  c:[["crossbow","Emergency Reload"],["crossbow","Explosive Grenade"],["crossbow","Gas Grenade"],["crossbow","Flash Grenade"]],
+  note:"Grenades are the elegant answer: they are thrown rather than fired, so they cost no clip and fill the reload window with useful damage. Emergency Reload is the blunt answer. The third answer is a weapon set swap — changing weapons resets what you are doing entirely, which is why crossbow characters get unusual value from Set II."
+}
+];
+
+/* ============ INDEX ============ */
+const byId = Object.fromEntries(W.map(w=>[w.id,w]));
+const ALL = [];
+W.forEach(w=>(w.tiers||[]).forEach(t=>t.s.forEach(s=>ALL.push({...s,w:w.id,wn:w.name,t:t.t}))));
+const findSkill = (wid,nm)=>ALL.find(s=>s.w===wid && s.n===nm);
+/* derive produces/consumes per skill from CHAINS */
+const SREL = {};
+CHAINS.forEach(ch=>{
+  ch.p.forEach(([w,n])=>{const k=w+"/"+n;(SREL[k]=SREL[k]||{out:[],in:[]}).out.push(ch.id)});
+  ch.c.forEach(([w,n])=>{const k=w+"/"+n;(SREL[k]=SREL[k]||{out:[],in:[]}).in.push(ch.id)});
+});
+const chainById = Object.fromEntries(CHAINS.map(c=>[c.id,c]));
+
+/* ============ STATE ============ */
+let view = {mode:"weapon", wid:"mace"};
+let sel = {w:"mace", n:"Boneshatter"};
+let query = "";
+
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const el = (h)=>{const d=document.createElement("div");d.innerHTML=h;return d};
+
+/* ============ RAIL ============ */
+function drawRail(){
+  const r = document.getElementById("rail");
+  let h = '<div class="railcap">Weapon trees</div>';
+  W.forEach(w=>{
+    h += `<button class="wbtn" data-w="${w.id}" aria-current="${view.mode==="weapon"&&view.wid===w.id}">
+      <span>${esc(w.name)}</span><span class="at">${esc(w.attr)}</span></button>`;
+  });
+  h += '<div class="raildiv"></div><div class="railcap">Reference</div>';
+  h += `<button class="wbtn" data-v="atlas" aria-current="${view.mode==="atlas"}"><span>Interaction Atlas</span></button>`;
+  h += `<button class="wbtn" data-v="systems" aria-current="${view.mode==="systems"}"><span>Systems &amp; Terms</span></button>`;
+  r.innerHTML = h;
+}
+
+/* ============ RENDER: weapon ============ */
+function tagHtml(tags){return (tags||[]).map(t=>`<span class="tg ${t}">${t}</span>`).join("")}
+
+function skillCard(s, wid){
+  const on = sel.w===wid && sel.n===s.n;
+  return `<button class="skill" data-s="${esc(s.n)}" data-sw="${wid}" aria-pressed="${on}">
+    <span class="sname">${esc(s.n)}${s.dflt?'<span class="dflt">DEFAULT</span>':""}${s.unsure?'<span class="unsure" title="Tier not corroborated">†</span>':""}</span>
+    <span class="tags">${tagHtml(s.tags)}</span>
+    <span class="srole">${esc(s.r)}</span>
+  </button>`;
+}
+
+function drawWeapon(w){
+  let h = `<div class="whead">
+    <div class="eyebrow">${esc(w.cls)} · ${esc(w.sub)}</div>
+    <h2>${esc(w.name)}</h2>
+    <div class="tagline">${esc(w.tagline)}</div>
+    <div class="meta">
+      <span class="mchip">ATTR <b>${esc(w.attr)}</b></span>
+      <span class="mchip">SKILLS <b>${(w.tiers||[]).reduce((a,t)=>a+t.s.length,0)}</b></span>
+      <span class="mchip">TIERS <b>${(w.tiers||[]).length?(w.tiers.map(t=>t.t).join(" · ")):"—"}</b></span>
+    </div>
+    <p class="prose">${w.identity}</p>
+  </div>`;
+
+  h += `<div class="cores">${w.cores.map(c=>`<div class="core"><h4>${esc(c.h)}</h4><p>${esc(c.b)}</p></div>`).join("")}</div>`;
+
+  if(w.unverified){
+    h += `<div class="notice" style="margin-top:22px"><b>Incomplete on purpose.</b> ${esc(w.unverified)}</div>`;
+  }
+
+  if((w.tiers||[]).length){
+    h += `<div class="ladder"><h3>Gem ladder — by Uncut Skill Gem tier</h3>`;
+    w.tiers.forEach(t=>{
+      h += `<div class="tier">
+        <div class="gut"><div class="gemno">${t.t}</div><div class="gemlbl">Gem<br>Lv.&nbsp;${t.t}</div></div>
+        <div class="tbody">
+          ${t.name?`<div class="tname">${esc(t.name)}</div>`:""}
+          ${t.note?`<p class="tnote">${esc(t.note)}</p>`:(t.name?'<div style="height:8px"></div>':"")}
+          <div class="grid">${t.s.map(s=>skillCard(s,w.id)).join("")}</div>
+        </div></div>`;
+    });
+    h += `</div>`;
+  }
+  return h;
+}
+
+/* ============ RENDER: atlas ============ */
+function refList(arr){
+  return `<div class="reflist">${arr.map(([w,n])=>{
+    const wn = byId[w] ? byId[w].name : w;
+    const short = wn.length>9 ? wn.slice(0,8)+"." : wn;
+    return `<div class="ref"><span class="refw">${esc(short)}</span><button class="xlink" data-s="${esc(n)}" data-sw="${w}">${esc(n)}</button></div>`;
+  }).join("")}</div>`;
+}
+function drawAtlas(){
+  let h = `<div class="whead">
+    <div class="eyebrow">Cross-tree reference</div>
+    <h2>Interaction Atlas</h2>
+    <div class="tagline">Every interaction in the game is one shape: something makes a state, something else spends it.</div>
+    <p class="prose">Skill synergy in Path of Exile 2 is not a web of special cases — it is a small number of <strong>consumable states</strong> with producers on one side and consumers on the other. Once you can see the state, you can see why a Warrior would carry a bow and why a Monk would carry a crossbow. Interactions that cross a weapon boundary are where the 24 Weapon Set passive points earn their keep; the rest resolve inside one tree.</p>
+  </div><div class="ladder"><h3>${CHAINS.length} consumable states</h3>`;
+  CHAINS.forEach(ch=>{
+    const wp = new Set(ch.p.map(x=>x[0])), wc = new Set(ch.c.map(x=>x[0]));
+    const cross = [...wc].some(x=>!wp.has(x)) || [...wp].some(x=>!wc.has(x));
+    h += `<section class="chain">
+      <header>
+        <h3>${esc(ch.name)} ${cross?'<span class="tg util" style="vertical-align:middle">cross-tree</span>':'<span class="tg phys" style="vertical-align:middle">in-tree</span>'}</h3>
+        <p>${ch.d}</p>
+      </header>
+      <div class="flow">
+        <div class="side p"><h5>Produced by</h5>${refList(ch.p)}</div>
+        <div class="arrow mono">&rarr;</div>
+        <div class="side c"><h5>Consumed by</h5>${refList(ch.c)}</div>
+      </div>
+      <div class="foot">${ch.note}</div>
+    </section>`;
+  });
+  return h + `</div>`;
+}
+
+/* ============ RENDER: systems ============ */
+function drawSystems(){
+  return `<div class="whead">
+    <div class="eyebrow">Mechanics</div>
+    <h2>Systems &amp; Terms</h2>
+    <div class="tagline">The rules the ladders above are built on.</div>
+  </div>
+  <div class="ladder">
+  <section class="sblock"><h3>Uncut Skill Gems and the tier gate</h3>
+    <p>Skills are not learned, bought, or unlocked by class. They are <strong>engraved</strong> onto Uncut Skill Gems, which drop at a level. When you open the Gemcutting menu, the game shows you every skill whose tier is at or below the gem's level <strong>and</strong> which your currently equipped weapon can use. Change the weapon in your hand and the list changes with it.</p>
+    <p>Skill tiers run <strong>1, 3, 5, 7, 9, 11 and 13</strong>. A Tier 7 skill needs a Level 7 or higher Uncut Skill Gem — and separately, you must meet the skill's own character level requirement, which a high-tier gem does not waive. Gem levels above 13 do not unlock new skills; they raise the level of the skill you engrave, with their own steep character requirements at the top end (roughly level 78 for an 18, 84 for a 19, 90 for a 20).</p>
+    <p>This is why "weapon skill tree" is a reasonable mental model even though no such screen exists: the set of skills a weapon can reach, ordered by the tier that gates them, <em>is</em> that weapon's progression.</p>
+  </section>
+
+  <section class="sblock"><h3>Weapon Sets and the 24 specialised points</h3>
+    <p>Every character carries two weapon configurations, <strong>Set I</strong> and <strong>Set II</strong>, swapped with a single key. On top of your normal passive points you earn <strong>24 Weapon Set passive skill points</strong> over a character's life, and each one is allocated to a specific set. Those nodes are live only while that set is equipped.</p>
+    <p>The practical effect is two partial trees layered over one shared trunk. A common split: area of effect and clear-speed nodes on the set holding your pack-clearing weapon, raw damage and critical nodes on the set holding your single-target weapon. Skills assigned to a set swap with it, so a well-built pair of sets changes your whole rotation on one keypress.</p>
+    <p>Points come from a small number of fixed sources, each granting two: the <strong>Book of Specialisation</strong> drops from optional bosses such as the Crowbell, Kabala and Mighty Silverfist, and from side quests including Tradition's Toll and the Sacrificial Heart ritual in Act 3. They are finite — there is no farming route to more than the full allotment.</p>
+  </section>
+
+  <section class="sblock"><h3>The consumable-state model</h3>
+    <p>Almost every interaction in this codex fits one template: <strong>a producer applies a state, a consumer spends it.</strong> Learning the states is faster than learning the skills, because the states are stable across patches while individual skill numbers are not.</p>
+    <div class="scroll"><table class="tbl">
+      <thead><tr><th>State</th><th>What it is</th><th>Crosses weapons?</th></tr></thead>
+      <tbody>
+      ${CHAINS.map(ch=>{
+        const wp=new Set(ch.p.map(x=>x[0])),wc=new Set(ch.c.map(x=>x[0]));
+        const cross=[...wc].some(x=>!wp.has(x))||[...wp].some(x=>!wc.has(x));
+        return `<tr><td>${esc(ch.name)}</td><td>${ch.d.replace(/<[^>]+>/g,"").split(".")[0]}.</td><td>${cross?"Yes":"Within one tree"}</td></tr>`;
+      }).join("")}
+      </tbody></table></div>
+  </section>
+
+  <section class="sblock"><h3>Glue that belongs to no weapon</h3>
+    <p><strong>Spirit skills</strong> — Heralds, banners, Wind Dancer, Combat Frenzy, Mirage Archer — reserve Spirit rather than costing mana, and most carry no weapon requirement at all. They are the connective tissue between two weapon sets: Combat Frenzy converting the ailments of one set into Frenzy Charges for the other is the clearest example in the game.</p>
+    <p><strong>Support gems</strong> cross trees the same way. Armour Explosion turns Broken Armour into area damage regardless of which weapon broke it. Cast on Melee Stun converts a mace's stuns into triggered spells. Ancestral Call multiplies placed objects like the Tempest Bell. When an interaction in the Atlas looks impossible between two weapons, a support is usually the missing link.</p>
+    <p>One caveat that catches people: <strong>Spirit granted by a weapon leaves with that weapon.</strong> A sceptre's Spirit reservation stops when you swap to Set II, and anything it was reserving drops. Reserve from your body armour and passives if you want it to survive the swap.</p>
+  </section>
+  </div>`;
+}
+
+/* ============ RENDER: search ============ */
+function drawSearch(q){
+  const t = q.toLowerCase();
+  const hits = ALL.filter(s =>
+    s.n.toLowerCase().includes(t) || s.r.toLowerCase().includes(t) ||
+    s.wn.toLowerCase().includes(t) || (s.tags||[]).some(x=>x.includes(t)));
+  const chits = CHAINS.filter(c => c.name.toLowerCase().includes(t) || c.d.toLowerCase().includes(t));
+  let h = `<div class="whead"><div class="eyebrow">Search</div><h2>&ldquo;${esc(q)}&rdquo;</h2>
+    <div class="tagline">${hits.length} skill${hits.length===1?"":"s"}${chits.length?` · ${chits.length} interaction state${chits.length===1?"":"s"}`:""}</div></div>
+    <div class="ladder">`;
+  if(chits.length){
+    h += `<h3>Interaction states</h3><div class="grid" style="margin-bottom:26px">` +
+      chits.map(c=>`<button class="skill" data-c="${c.id}"><span class="sname">${esc(c.name)}</span>
+      <span class="srole">${esc(c.d.replace(/<[^>]+>/g,"").slice(0,110))}…</span></button>`).join("") + `</div>`;
+  }
+  if(hits.length){
+    h += `<h3>Skills</h3>`;
+    const byW = {};
+    hits.forEach(s=>(byW[s.w]=byW[s.w]||[]).push(s));
+    Object.keys(byW).forEach(wid=>{
+      h += `<div class="tname" style="margin-top:16px">${esc(byId[wid].name)}</div>
+        <p class="tnote">Gem tiers ${byW[wid].map(s=>s.t).filter((v,i,a)=>a.indexOf(v)===i).join(", ")}</p>
+        <div class="grid">${byW[wid].map(s=>skillCard(s,wid)).join("")}</div>`;
+    });
+  }
+  if(!hits.length && !chits.length) h += `<p class="empty">Nothing matches that. Try a damage type (<span class="mono">cold</span>, <span class="mono">light</span>), a state (<span class="mono">armour</span>, <span class="mono">shock</span>), or part of a skill name.</p>`;
+  return h + `</div>`;
+}
+
+/* ============ DETAIL PANEL ============ */
+function drawDetail(){
+  const d = document.getElementById("detail");
+  if(sel.c){
+    const ch = chainById[sel.c];
+    d.innerHTML = `<div class="dhead"><div class="from">Interaction state</div><h3>${esc(ch.name)}</h3>
+      <span class="tags">${tagHtml([ch.hue])}</span></div>
+      <div class="dsec"><h5>What it is</h5><p>${ch.d}</p></div>
+      <div class="dsec"><h5>Produced by</h5>${refList(ch.p)}</div>
+      <div class="dsec"><h5>Consumed by</h5>${refList(ch.c)}</div>
+      <div class="dsec"><h5>How to use it</h5><p>${ch.note}</p></div>`;
+    return;
+  }
+  const s = findSkill(sel.w, sel.n);
+  if(!s){ d.innerHTML = `<p class="empty">Pick a skill to see how it connects.</p>`; return; }
+  const w = byId[s.w];
+  const rel = SREL[s.w+"/"+s.n] || {out:[],in:[]};
+  let h = `<div class="dhead">
+    <div class="from">${esc(w.name)} · Gem Lv. ${s.t}${s.dflt?" · default":""}</div>
+    <h3>${esc(s.n)}</h3>
+    <span class="tags">${tagHtml(s.tags)}</span>
+  </div>
+  <div class="dsec"><h5>Role</h5><p>${esc(s.r)}</p></div>`;
+
+  if(s.unsure) h += `<div class="dsec"><h5>Verify</h5><p><em>Tier uncorroborated.</em> I could not confirm this skill's gem tier from a source I trust. The skill exists; the number above may be off by a tier.</p></div>`;
+
+  if(rel.out.length || rel.in.length){
+    h += `<div class="dsec"><h5>Interaction states</h5><div class="chainlist">`;
+    rel.out.forEach(id=>{const c=chainById[id];
+      h += `<div class="crow"><span class="crole out mono">MAKES</span><span><b>${esc(c.name)}</b> — <span>${esc(c.d.replace(/<[^>]+>/g,"").split(".")[0])}.</span></span></div>`});
+    rel.in.forEach(id=>{const c=chainById[id];
+      h += `<div class="crow"><span class="crole in mono">SPENDS</span><span><b>${esc(c.name)}</b> — <span>${esc(c.d.replace(/<[^>]+>/g,"").split(".")[0])}.</span></span></div>`});
+    h += `</div></div>`;
+
+    /* partners */
+    const partners = {};
+    rel.out.forEach(id=>chainById[id].c.forEach(([pw,pn])=>{ if(pw!==s.w||pn!==s.n) partners[pw+"/"+pn]=[pw,pn]; }));
+    rel.in.forEach(id=>chainById[id].p.forEach(([pw,pn])=>{ if(pw!==s.w||pn!==s.n) partners[pw+"/"+pn]=[pw,pn]; }));
+    const pv = Object.values(partners);
+    if(pv.length){
+      const same = pv.filter(p=>p[0]===s.w), other = pv.filter(p=>p[0]!==s.w);
+      if(same.length) h += `<div class="dsec"><h5>Pairs with — same tree</h5><div class="xwrap">${same.map(([pw,pn],i)=>`<button class="xlink" data-s="${esc(pn)}" data-sw="${pw}">${esc(pn)}</button>${i<same.length-1?"<span>·</span>":""}`).join(" ")}</div></div>`;
+      if(other.length) h += `<div class="dsec"><h5>Pairs with — other weapon sets</h5><div class="xwrap">${other.map(([pw,pn],i)=>`<button class="xlink" data-s="${esc(pn)}" data-sw="${pw}">${esc(pn)} <span style="color:var(--faint);font-size:11px">(${esc(byId[pw].name)})</span></button>${i<other.length-1?"<span>·</span>":""}`).join(" ")}</div></div>`;
+    }
+  } else {
+    h += `<div class="dsec"><h5>Interactions</h5><p>No consumable-state interaction catalogued. This skill stands on its own numbers — which, for a capstone or a movement skill, is usually the point.</p></div>`;
+  }
+  d.innerHTML = h;
+}
+
+/* ============ DRAW ============ */
+function draw(){
+  drawRail();
+  const m = document.getElementById("main");
+  if(query.trim().length>=2) m.innerHTML = drawSearch(query.trim());
+  else if(view.mode==="atlas") m.innerHTML = drawAtlas();
+  else if(view.mode==="systems") m.innerHTML = drawSystems();
+  else m.innerHTML = drawWeapon(byId[view.wid]);
+  drawDetail();
+}
+
+/* ============ EVENTS ============ */
+document.addEventListener("click", e=>{
+  const wb = e.target.closest(".wbtn");
+  if(wb){
+    query=""; document.getElementById("q").value="";
+    if(wb.dataset.w){ view={mode:"weapon",wid:wb.dataset.w};
+      const first=(byId[wb.dataset.w].tiers[0]||{s:[]}).s[0];
+      if(first) sel={w:wb.dataset.w,n:first.n};
+    } else view={mode:wb.dataset.v};
+    draw(); window.scrollTo({top:0,behavior:"smooth"}); return;
+  }
+  const cb = e.target.closest("[data-c]");
+  if(cb){ sel={c:cb.dataset.c}; drawDetail(); document.getElementById("detail").scrollIntoView({block:"nearest",behavior:"smooth"}); return; }
+  const sb = e.target.closest("[data-s][data-sw]");
+  if(sb){
+    sel={w:sb.dataset.sw,n:sb.dataset.s};
+    if(!query.trim() && view.mode==="weapon" && view.wid!==sb.dataset.sw){ view={mode:"weapon",wid:sb.dataset.sw}; draw(); }
+    else if(view.mode!=="weapon" || query.trim()){ drawDetail(); }
+    else { document.querySelectorAll(".skill[aria-pressed]").forEach(b=>b.setAttribute("aria-pressed", b.dataset.sw===sel.w && b.dataset.s===sel.n)); drawDetail(); }
+    document.getElementById("detail").scrollIntoView({block:"nearest",behavior:"smooth"});
+  }
+});
+document.getElementById("q").addEventListener("input", e=>{ query=e.target.value; draw(); });
+
+draw();
+</script>
