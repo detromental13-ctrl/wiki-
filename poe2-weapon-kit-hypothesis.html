@@ -1,0 +1,575 @@
+<title>The Weapon Kit Hypothesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#f0f1f4; --paper:#fbfbfc; --sunk:#e6e8ed; --line:#d3d8e0; --hair:#e2e6ec;
+  --ink:#15181e; --ink2:#4d545e; --ink3:#848c98;
+  --rule:#3c4a72;
+  --cited:#3f6b52; --cited-bg:#e7efe9;
+  --meas:#47597f;  --meas-bg:#e6eaf1;
+  --asum:#7d6427;  --asum-bg:#f2ece0;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a;
+  --viz-surface:#fbfbfc;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#101319; --paper:#171b22; --sunk:#1e232b; --line:#2b323c; --hair:#232932;
+    --ink:#e7eaef; --ink2:#9aa3b0; --ink3:#6b7480;
+    --rule:#9db0e4;
+    --cited:#86b89c; --cited-bg:#1a2620;
+    --meas:#93a8c9;  --meas-bg:#1a212c;
+    --asum:#c4a763;  --asum-bg:#262016;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+    --viz-surface:#171b22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101319; --paper:#171b22; --sunk:#1e232b; --line:#2b323c; --hair:#232932;
+  --ink:#e7eaef; --ink2:#9aa3b0; --ink3:#6b7480;
+  --rule:#9db0e4;
+  --cited:#86b89c; --cited-bg:#1a2620;
+  --meas:#93a8c9;  --meas-bg:#1a212c;
+  --asum:#c4a763;  --asum-bg:#262016;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70;
+  --viz-surface:#171b22;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);margin:0;
+  font-family:Newsreader,Georgia,"Times New Roman",serif;font-size:17.5px;line-height:1.62;
+  -webkit-font-smoothing:antialiased}
+.sans{font-family:"IBM Plex Sans",system-ui,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+
+.page{max-width:1080px;margin:0 auto;padding-inline:20px;padding-block:0}
+.col{max-width:64ch}
+
+/* masthead */
+header.mast{border-bottom:1px solid var(--line);background:var(--paper)}
+.mastin{max-width:1080px;margin:0 auto;padding:44px 20px 30px}
+.kicker{font-family:"IBM Plex Sans",sans-serif;font-size:11px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--rule)}
+h1{font-size:clamp(34px,6vw,54px);font-weight:600;line-height:1.04;letter-spacing:-.022em;
+  margin:12px 0 0;text-wrap:balance;max-width:17ch}
+.standfirst{font-size:20px;line-height:1.5;color:var(--ink2);margin:16px 0 0;max-width:56ch;font-style:italic}
+.byline{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;color:var(--ink3);margin-top:22px;
+  display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center}
+.byline a{color:var(--rule)}
+
+/* provenance filter */
+.filterbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 93%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.filterin{max-width:1080px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.flabel{font-family:"IBM Plex Sans",sans-serif;font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink3);margin-right:2px}
+.fchip{font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:600;letter-spacing:.02em;
+  border:1px solid;border-radius:20px;padding:4px 12px;cursor:pointer;background:none;display:inline-flex;
+  gap:7px;align-items:center}
+.fchip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.fchip[data-p="cited"]{color:var(--cited);border-color:var(--cited)}
+.fchip[data-p="measured"]{color:var(--meas);border-color:var(--meas)}
+.fchip[data-p="assumed"]{color:var(--asum);border-color:var(--asum)}
+.fchip[aria-pressed="true"][data-p="cited"]{background:var(--cited-bg)}
+.fchip[aria-pressed="true"][data-p="measured"]{background:var(--meas-bg)}
+.fchip[aria-pressed="true"][data-p="assumed"]{background:var(--asum-bg)}
+.fchip[aria-pressed="false"]{opacity:.4}
+.fchip:focus-visible{outline:2px solid var(--rule);outline-offset:2px}
+.fcount{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink3);margin-left:auto}
+
+/* claim blocks */
+.claim{position:relative;margin:0 0 22px}
+.claim[hidden]{display:none}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:9.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;padding:2px 6px;border-radius:2px;border:1px solid;display:inline-block;
+  margin-bottom:6px;white-space:nowrap}
+.tag.cited{color:var(--cited);border-color:var(--cited);background:var(--cited-bg)}
+.tag.measured{color:var(--meas);border-color:var(--meas);background:var(--meas-bg)}
+.tag.assumed{color:var(--asum);border-color:var(--asum);background:var(--asum-bg)}
+@media(min-width:1040px){
+  .claim{padding-left:0}
+  .claim > .tag{position:absolute;left:0;top:5px;margin:0;width:104px;text-align:center}
+  .col{margin-left:118px}
+  .page{max-width:1180px}
+  header.mast .mastin,.filterin{max-width:1180px}
+}
+
+section{padding-block:46px}
+section + section{border-top:1px solid var(--hair)}
+h2{font-size:29px;font-weight:600;letter-spacing:-.015em;margin:0 0 6px;text-wrap:balance}
+h2 .num{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--rule);
+  display:block;margin-bottom:8px;letter-spacing:.06em}
+.dek{color:var(--ink2);font-size:17px;margin:0 0 26px;max-width:58ch}
+h3{font-size:20px;font-weight:600;margin:30px 0 8px;letter-spacing:-.01em}
+p{margin:0 0 18px}
+.claim p:last-child{margin-bottom:0}
+strong{font-weight:600}
+em{font-style:italic}
+a{color:var(--rule);text-underline-offset:2px}
+
+/* quotes */
+blockquote{margin:0 0 10px;padding:2px 0 2px 18px;border-left:2px solid var(--cited);
+  font-size:18.5px;line-height:1.55}
+blockquote p{margin:0 0 10px}
+.attrib{font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;color:var(--ink3);margin:0}
+.attrib a{color:var(--ink3)}
+
+/* figures */
+figure{margin:26px 0;background:var(--paper);border:1px solid var(--line);border-radius:5px;
+  padding:20px 22px;max-width:none}
+@media(min-width:1040px){figure{margin-left:118px}}
+figcaption{font-family:"IBM Plex Sans",sans-serif;font-size:13px;color:var(--ink2);
+  line-height:1.5;margin-top:16px;padding-top:13px;border-top:1px solid var(--hair)}
+figcaption b{color:var(--ink);font-weight:600}
+.figtitle{font-family:"IBM Plex Sans",sans-serif;font-size:12px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.figlede{font-size:17px;font-weight:500;margin:0 0 18px;letter-spacing:-.005em}
+
+/* stacked bars */
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:16px;
+  font-family:"IBM Plex Sans",sans-serif;font-size:12.5px;color:var(--ink2)}
+.lgi{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;border-radius:2px;flex:none}
+.rows{display:flex;flex-direction:column;gap:9px}
+.row{display:grid;grid-template-columns:116px minmax(0,1fr) 34px;gap:11px;align-items:center}
+@media(max-width:560px){.row{grid-template-columns:88px minmax(0,1fr) 28px;gap:8px}}
+.rname{font-family:"IBM Plex Sans",sans-serif;font-size:13px;text-align:right;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar{display:flex;gap:2px;height:22px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.seg{display:flex;align-items:center;justify-content:center;min-width:0;
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;color:#fff;cursor:default}
+.seg:first-child{border-radius:4px 0 0 4px}
+.seg:last-child{border-radius:0 4px 4px 0}
+.seg.s1{background:var(--s1)} .seg.s2{background:var(--s2)} .seg.s3{background:var(--s3)}
+.rtot{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink3);text-align:right}
+.axis{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--ink3);
+  margin-top:8px;padding-left:127px}
+@media(max-width:560px){.axis{padding-left:96px}}
+.vtoggle{font-family:"IBM Plex Sans",sans-serif;font-size:12px;color:var(--ink2);background:none;
+  border:1px solid var(--line);border-radius:3px;padding:3px 10px;cursor:pointer;margin-top:14px}
+.vtoggle:hover{border-color:var(--rule);color:var(--ink)}
+.vtoggle:focus-visible{outline:2px solid var(--rule);outline-offset:2px}
+
+/* tables */
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-family:"IBM Plex Sans",sans-serif;font-size:13.5px;margin-top:4px}
+th,td{text-align:left;padding:7px 14px 7px 0;border-bottom:1px solid var(--hair);vertical-align:top}
+th{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);font-weight:700}
+td{color:var(--ink2)}
+td:first-child,th:first-child{color:var(--ink);font-weight:500}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;text-align:right;padding-right:20px}
+th.n{text-align:right;padding-right:20px}
+
+/* callout */
+.note{background:var(--sunk);border-radius:4px;padding:16px 18px;font-size:15.5px;
+  line-height:1.55;color:var(--ink2);margin:22px 0}
+@media(min-width:1040px){.note{margin-left:118px}}
+.note b{color:var(--ink)}
+.wrong{border-left:3px solid var(--s2)}
+
+/* predictions */
+ol.preds{counter-reset:pr;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+ol.preds li{counter-increment:pr;position:relative;padding-left:40px;font-size:16.5px;line-height:1.55}
+ol.preds li::before{content:"P" counter(pr);position:absolute;left:0;top:2px;
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:var(--rule);
+  border:1px solid var(--line);border-radius:3px;padding:2px 5px}
+
+footer.end{border-top:1px solid var(--line);background:var(--paper);margin-top:20px}
+.endin{max-width:1180px;margin:0 auto;padding:30px 20px 52px;font-size:14px;color:var(--ink3);line-height:1.6}
+.endin h4{font-family:"IBM Plex Sans",sans-serif;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  margin:0 0 10px;color:var(--ink2)}
+.endin p{max-width:70ch;margin-bottom:12px}
+.endin a{color:var(--rule)}
+.tip{position:fixed;z-index:50;pointer-events:none;background:var(--ink);color:var(--bg);
+  font-family:"IBM Plex Sans",sans-serif;font-size:12px;padding:5px 9px;border-radius:3px;
+  opacity:0;transition:opacity .12s;white-space:nowrap}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="mast">
+  <div class="mastin">
+    <div class="kicker">Path of Exile 2 · Design analysis</div>
+    <h1>The Weapon Kit Hypothesis</h1>
+    <p class="standfirst">When Grinding Gear Games adds a weapon to Path&nbsp;of&nbsp;Exile&nbsp;2, they are not shipping a list of skills. They appear to be shipping a machine with a fixed number of moving parts — and one deliberate hole in it.</p>
+    <div class="byline">
+      <span>Patch 0.5.5 · Forbidden Rites</span>
+      <span>·</span>
+      <span>Dataset: 135 skills, 12 weapon categories, 17 shared effects</span>
+      <span>·</span>
+      <a href="https://claude.ai/code/artifact/e1a92f9f-cab1-4413-b20c-abe9fe9012ae">Wraeclast Weapon Codex →</a>
+    </div>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="filterin">
+    <span class="flabel">Show claims</span>
+    <button class="fchip" data-p="cited" aria-pressed="true"><span class="dot"></span>On record</button>
+    <button class="fchip" data-p="measured" aria-pressed="true"><span class="dot"></span>Measured</button>
+    <button class="fchip" data-p="assumed" aria-pressed="true"><span class="dot"></span>Assumed</button>
+    <span class="fcount" id="fcount"></span>
+  </div>
+</div>
+
+<div class="page">
+
+<section>
+  <div class="col">
+    <h2><span class="num">01</span>The unit of design is the kit, not the skill</h2>
+    <p class="dek">Path of Exile 1 accumulated skills one at a time over a decade. Path of Exile 2 ships them in weapon-sized batches — which changes what is being designed.</p>
+  </div>
+
+  <div class="claim" data-prov="assumed">
+    <span class="tag assumed">Assumed</span>
+    <div class="col">
+      <p>Every weapon category in Path of Exile 2 arrives as a block. The Huntress did not get a spear skill; she got twenty of them at once, gated across seven gem tiers. That release shape has a consequence that is easy to miss: the designer is not answering "is this skill good?" but "does this <em>set</em> hold together, and can someone play the whole campaign with nothing else?"</p>
+      <p>This piece separates three things that discussions of game design usually blur together: what GGG has actually said, what the shipped data measurably shows, and what I am guessing. Every block below is tagged with which of the three it is, and you can switch the guesses off entirely with the control at the top.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="num">02</span>What GGG has said</h2>
+    <p class="dek">The design intent is unusually well documented, because Jonathan Rogers gives long interviews and keeps answering the same question.</p>
+  </div>
+
+  <div class="claim" data-prov="cited">
+    <span class="tag cited">On record</span>
+    <div class="col">
+      <p>The founding question behind Path of Exile 2's combat was not about weapons at all. It was about skill count:</p>
+      <blockquote><p>"How can we make a player use both a fire skill and a cold skill on one build?"</p></blockquote>
+      <p class="attrib">Jonathan Rogers, game director, paraphrased in <a href="https://maxroll.gg/poe/news/pax-west-path-of-exile-2-interview-with-jonathan-rogers">Maxroll's PAX West interview</a>. Weapon swap and the weapon-set passive points are described as direct answers to it.</p>
+    </div>
+  </div>
+
+  <div class="claim" data-prov="cited">
+    <span class="tag cited">On record</span>
+    <div class="col">
+      <p>The same concern shows up as a stated fear of rotation collapse — the state where a build reduces to one button:</p>
+      <blockquote><p>"We want you to have things to put in there that you can use occasionally to deal with problems. Sort of how we promote interesting change up in skill usage, because otherwise it would just end up being like, I use the same rotation again and again and again."</p></blockquote>
+      <p class="attrib">Rogers, quoted in <a href="https://www.mmorpg.com/interviews/interview-path-of-exile-2s-game-director-jonathan-rogers-chats-gameplay-intentions-inclusions-and-improvements-2000130901">MMORPG.com's interview</a>. Alongside it, the governing principle: <em>the most fun way to play should be the most efficient way to play</em> — and an acknowledgement that this is hard, because "if we want to promote skill diversity, then it means we really have to have those kind of solutions for those optimizers."</p>
+    </div>
+  </div>
+
+  <div class="claim" data-prov="cited">
+    <span class="tag cited">On record</span>
+    <div class="col">
+      <p>The single most useful statement for this piece is about spears specifically, and it describes a <em>slot guarantee</em> rather than a skill:</p>
+      <blockquote><p>Each spear would grant at least one mobility skill — the demo weapon carried both an engage that closed distance for a damage bonus, and a disengage that moved the character backwards while throwing projectiles.</p></blockquote>
+      <p class="attrib">Chris Wilson, paraphrased from the Path of Exile 2 gameplay walkthrough reporting. This is evidence that a weapon is specified partly as a list of roles it must fill, not only as a list of skills.</p>
+    </div>
+  </div>
+
+  <div class="claim" data-prov="cited">
+    <span class="tag cited">On record</span>
+    <div class="col">
+      <p>Two further design commitments frame everything else. Weapon classes are stated to be deliberately differentiated — two-handers slow and devastating, dual wielding rhythmic and aggressive, bows and wands built on positioning and timing. And the dodge roll exists because heavy skills need an escape hatch: Rogers has said skills feel terrible if you start them and cannot get out, so interruption matters.</p>
+      <p>That last one is a design constraint with teeth. It means a weapon may contain genuinely slow, committing skills — Sunder's flat added attack time, Hammer of the Gods' wind-up — only because a universal escape exists to make the commitment survivable.</p>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>How solid are these quotes?</b> Not as solid as I would like. Direct access to the primary interviews was blocked from where I am working, so every quotation above reached me through secondary reporting and summary. Treat them as <em>GGG said something close to this</em>, not as verbatim transcript. The wording may have drifted; the substance is consistent across several independent outlets, which is the only corroboration I can offer.
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="num">03</span>What the shipped data shows</h2>
+    <p class="dek">The codex catalogues 135 skills and the 17 shared effects they pass between one another, as 148 directed links. Those links can be counted, and counting them says things the patch notes do not.</p>
+  </div>
+
+  <div class="claim" data-prov="measured">
+    <span class="tag measured">Measured</span>
+    <div class="col">
+      <p>Start with <strong>closure</strong>. For each weapon, count the shared effects it both produces and consumes — a loop that runs entirely inside one weapon, needing nothing else equipped. Then count the effects it only produces (exports, which some other weapon must spend) and only consumes (imports, which some other weapon must supply).</p>
+    </div>
+  </div>
+
+  <figure>
+    <div class="figtitle">Exhibit A</div>
+    <p class="figlede">Crossbow is a complete machine. Bow is half of one.</p>
+    <div class="legend">
+      <span class="lgi"><span class="sw" style="background:var(--s1)"></span>Closed loop — makes and spends it</span>
+      <span class="lgi"><span class="sw" style="background:var(--s2)"></span>Exports — makes only</span>
+      <span class="lgi"><span class="sw" style="background:var(--s3)"></span>Imports — spends only</span>
+    </div>
+    <div class="rows" id="barsA"></div>
+    <div class="axis">0 &nbsp;·&nbsp; shared effects touched &nbsp;·&nbsp; 10</div>
+    <button class="vtoggle" id="tblA" type="button" aria-expanded="false">Show as table</button>
+    <div id="tblAbox" hidden class="scroll"></div>
+    <figcaption><b>Closure is a proxy for kit cohesion.</b> Crossbow closes seven loops — it applies Shock and spends it, lays gas and ignites it, breaks armour and exploits it, embeds munitions and detonates them. It can be played alone. Bow closes only two and exports four: it lays gas clouds, poison and lightning rods it has no skill to cash in. Those aren't gaps in the roster. They're the reason a bow character reaches for a second weapon set.</figcaption>
+  </figure>
+
+  <div class="claim" data-prov="measured">
+    <span class="tag measured">Measured</span>
+    <div class="col">
+      <p>Now look at the effects from the other side. Of the seventeen shared effects in the catalogue, <strong>exactly two belong to a single weapon</strong>: Clips &amp; Reload is crossbow-only, and Rage is talisman-only. Everything else is touched by two to six different weapons — Shock, Chill &amp; Freeze and Ignite each reach six.</p>
+    </div>
+  </div>
+
+  <figure>
+    <div class="figtitle">Exhibit B</div>
+    <p class="figlede">Almost nothing is private. That is the design.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Shared effect</th><th class="n">Weapons</th><th>Reach</th></tr></thead>
+      <tbody id="tblB"></tbody>
+    </table></div>
+    <figcaption><b>A weapon's identity lives in its private effects; its flexibility lives in its shared ones.</b> Only two weapons own a resource outright — and those two, crossbow and talisman, are also among the most self-contained kits in the game. Two cases is a suggestion, not a finding.</figcaption>
+  </figure>
+
+  <div class="claim" data-prov="measured">
+    <span class="tag measured">Measured</span>
+    <div class="col">
+      <p>Every weapon with a complete gem ladder also fills the same structural slots: a free default attack that needs no gem, at least one mobility skill, and a capstone at Tier&nbsp;11 or above. Five of six martial weapons have all three.</p>
+      <p>The exception is <strong>crossbow, which has no mobility skill at all</strong> in this dataset. That is either a genuine characteristic — the crossbow reloads rather than repositions, and buys its safety with grenades and range — or a hole in my roster. I lean towards the former, but I cannot rule out the latter, and it is the one slot-coverage result I would most want checked in game.</p>
+    </div>
+  </div>
+
+  <figure>
+    <div class="figtitle">Exhibit C</div>
+    <p class="figlede">The slots every finished weapon fills.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Weapon</th><th class="n">Skills</th><th>Free default</th><th>Mobility</th><th>Capstone (T11+)</th></tr></thead>
+      <tbody id="tblC"></tbody>
+    </table></div>
+    <figcaption>Talisman fills the same slots through a different door: no free default because the form supplies its own basic attack, and Pounce is the Werewolf's mobility. Wand, sceptre and staff fill none of them, which is consistent — they are not kits, they are connectors.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="num">04</span>A hypothesis that did not survive</h2>
+    <p class="dek">The tidiest version of this theory was wrong, and being wrong produced a better answer than the theory would have.</p>
+  </div>
+
+  <div class="claim" data-prov="measured">
+    <span class="tag measured">Measured</span>
+    <div class="col">
+      <p>I expected the gem ladder to work as a curriculum: a weapon teaches you to <em>make</em> an effect before it teaches you to <em>spend</em> it, so setup is always unlocked before payoff. It is an appealing idea. It predicts that for every shared effect, the earliest producer sits at a lower gem tier than the earliest consumer.</p>
+      <p>Across the fourteen effects with numeric tiers on both sides, the producer comes earlier in six cases, at the same tier in four, and <strong>later in four</strong>. There is no rule there.</p>
+    </div>
+  </div>
+
+  <div class="note wrong">
+    <b>Why it fails, and what that reveals.</b> The consumers are frequently not special. Any fire hit ignites a gas cloud, and Explosive Grenade is a <em>Tier&nbsp;1</em> crossbow skill — so the payoff for Gas Arrow was available before Gas Arrow existed. The gate is on the interesting half only.
+  </div>
+
+  <div class="claim" data-prov="assumed">
+    <span class="tag assumed">Assumed</span>
+    <div class="col">
+      <p>The revised reading is more interesting than the hypothesis it replaced. <strong>GGG gates the designed half of an interaction and leaves the generic half open.</strong> Producers are bespoke objects — Gas Arrow, Armour Breaker, Stormblast Bolts, Explosive Spear each exist to create one specific state, and each sits behind a tier. Consumers are frequently just "damage of the right type", and damage of the right type is everywhere.</p>
+      <p>That asymmetry explains the shape of Exhibit A better than closure alone does. Crossbow scores highest not because it was designed to be self-sufficient, but because it happens to own the generic detonators — fire, explosions, rapid multi-hit clips. It is the weapon most likely to already have the second half of someone else's combo in its pocket.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="num">05</span>The assumed build order</h2>
+    <p class="dek">Six steps that would produce the shipped data. This is a model, not a leak — nobody at GGG has described a process in these terms.</p>
+  </div>
+
+  <div class="claim" data-prov="assumed">
+    <span class="tag assumed">Assumed</span>
+    <div class="col">
+      <h3>1 · Choose a fantasy and a verb</h3>
+      <p>Mace is <em>commit and crush</em>. Crossbow is <em>load and fire</em>. Quarterstaff is <em>flurry</em>. Talisman is <em>become</em>. The verb decides the pacing of every skill in the set before any of them exists, which is why no mace skill is fast and no quarterstaff skill is heavy.</p>
+
+      <h3>2 · Decide whether it gets a private resource</h3>
+      <p>A resource nobody else touches is the strongest identity device available and the most expensive, because it needs its own producers and its own consumers built from scratch. Two weapons got one. Most weapons instead take a strong claim on a shared effect — mace owns Armour Break and Heavy Stun without owning them exclusively.</p>
+
+      <h3>3 · Fill the mandatory slots</h3>
+      <p>Free default, mobility, pack clear, single target, capstone. Wilson's statement that every spear grants a mobility skill is the closest thing to direct evidence that a checklist like this exists, and Exhibit C is what it looks like from outside.</p>
+
+      <h3>4 · Close at least one internal loop</h3>
+      <p>The weapon has to be playable alone, because most players will reach maps holding exactly one. Every weapon with a full ladder closes at least two loops; none closes zero.</p>
+
+      <h3>5 · Leave a deliberate hole</h3>
+      <p>And then it must <em>not</em> be complete, or the second weapon set has no job and Rogers' founding question goes unanswered. Bow is the clearest case in the game: four exported effects, an entire half-combo shipped without its other half.</p>
+
+      <h3>6 · Pace the ladder so the weapon changes character as it grows</h3>
+      <p>Tier 1 establishes the loop, tier 3 introduces the signature state, tier 5 supplies the workhorse, tier 7 adds something that persists on the battlefield, tier 9 adds delay and prediction, tiers 11–13 pay off. This is a teaching sequence — but, per section 04, it teaches the <em>producers</em> in order and lets the payoffs fall where they may.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="num">06</span>The control case</h2>
+    <p class="dek">Flail is in the game as an item class with essentially no kit. If the model is right, that is a prediction about what Flail must eventually receive.</p>
+  </div>
+
+  <div class="claim" data-prov="measured">
+    <span class="tag measured">Measured</span>
+    <div class="col">
+      <p>Flail has one confirmed skill — its default attack — no mobility skill, no capstone, no closed loop, and no claim on any shared effect. On every measure in this piece it scores zero. It is a weapon base without a machine attached.</p>
+    </div>
+  </div>
+
+  <div class="claim" data-prov="assumed">
+    <span class="tag assumed">Assumed</span>
+    <div class="col">
+      <p>That makes it the useful control. Every other weapon in the game was finished before it shipped; Flail lets us watch the process run once more from the start. If the build order above is roughly right, Flail's eventual roster has to contain a mobility skill, a capstone at Tier&nbsp;11 or higher, and at least one closed loop. If it instead arrives as a pile of generic one-handed melee skills with no loop of its own, the model in section 05 is wrong and should be discarded rather than patched.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="col">
+    <h2><span class="num">07</span>Predictions</h2>
+    <p class="dek">Stated so they can be checked against future patches rather than argued about.</p>
+  </div>
+
+  <div class="claim" data-prov="assumed">
+    <span class="tag assumed">Assumed</span>
+    <div class="col">
+      <ol class="preds">
+        <li>Swords ship at 1.0 with at least one closed loop and at least one mobility skill.</li>
+        <li>Swords claim a private effect rather than only borrowing shared ones — parry and riposte are the obvious candidates given how the Duelist has been framed.</li>
+        <li>Flail's completed roster includes a capstone at Tier 11 or above.</li>
+        <li>No weapon category ever ships with zero closed loops. Connectors like wands and sceptres are exempt; they are not kits.</li>
+        <li>Crossbow remains at or near the top of the closure ranking across patches, because it owns the generic detonators and detonation is the most reusable consumer in the game.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<footer class="end">
+  <div class="endin">
+    <h4>Method and limits</h4>
+    <p><b>The exhibits measure my model of the game, not the game.</b> Closure counts, reach counts and slot coverage are all computed from the catalogue of 17 shared effects I authored for the Wraeclast Weapon Codex. A different cataloguer would draw different boundaries — split Chill from Freeze, or fold Oil into Gas — and every number here would move. The relative ordering is more robust than the absolute values, and the Bow/Crossbow contrast is large enough to survive most plausible recategorisations. Nothing here is measured from game files.</p>
+    <p><b>Gem tiers are the soft part.</b> Tier values come from community databases that disagree with one another; a handful are flagged as uncorroborated in the codex itself. Section 04's count is the result most exposed to that, since it compares tier numbers directly. It would take only a few corrections to move the six / four / four split — though not, I think, far enough to restore the rule.</p>
+    <p><b>All GGG statements reached me through secondary reporting</b>, as noted in section 02. None were read from a primary transcript, a forum post, or a stream.</p>
+    <p><b>Not affiliated with Grinding Gear Games.</b> Path of Exile 2 is their work; this is outside analysis of it, and the sections marked Assumed are guesses about people's intentions that those people have never confirmed.</p>
+    <h4 style="margin-top:22px">Sources</h4>
+    <p><a href="https://maxroll.gg/poe/news/pax-west-path-of-exile-2-interview-with-jonathan-rogers">Maxroll — PAX West interview with Jonathan Rogers</a> · <a href="https://www.mmorpg.com/interviews/interview-path-of-exile-2s-game-director-jonathan-rogers-chats-gameplay-intentions-inclusions-and-improvements-2000130901">MMORPG.com — interview with Jonathan Rogers</a> · <a href="https://www.pcgamer.com/path-of-exile-2-is-building-on-a-decade-of-action-rpg-depth-but-its-the-no-cooldown-dodge-roll-im-really-psyched-about/">PC Gamer — on the dodge roll and interruption</a> · <a href="https://maxroll.gg/poe2/resources/skills-in-path-of-exile-2">Maxroll — Skills in Path of Exile 2</a> · <a href="https://vulkk.com/2025/03/10/path-of-exile-2-gemcutting-explained/">VULKK — Gemcutting explained</a></p>
+  </div>
+</footer>
+
+<div class="tip" id="tip"></div>
+
+<script>
+"use strict";
+
+/* Computed from the Wraeclast Weapon Codex dataset (135 skills / 17 shared effects / 148 links). */
+const CLOSURE = [
+  {w:"Crossbow",     closed:7, exports:2, imports:1},
+  {w:"Spear",        closed:5, exports:2, imports:2},
+  {w:"Quarterstaff", closed:4, exports:1, imports:1},
+  {w:"Talisman",     closed:4, exports:1, imports:1},
+  {w:"Mace",         closed:3, exports:2, imports:2},
+  {w:"Bow",          closed:2, exports:4, imports:2},
+  {w:"Wand",         closed:0, exports:5, imports:1},
+  {w:"Staff",        closed:0, exports:3, imports:0},
+  {w:"Shield",       closed:0, exports:1, imports:0},
+  {w:"Unarmed",      closed:0, exports:0, imports:1},
+  {w:"Flail",        closed:0, exports:0, imports:0}
+];
+const REACH = [
+  ["Shock",6,"Quarterstaff, Bow, Crossbow, Spear, Staff, Wand"],
+  ["Chill & Freeze",6,"Quarterstaff, Spear, Crossbow, Bow, Talisman, Wand"],
+  ["Ignite & Burning Ground",6,"Mace, Crossbow, Spear, Talisman, Staff, Wand"],
+  ["Gas Cloud",5,"Bow, Crossbow, Wand, Mace, Spear"],
+  ["Broken Armour",4,"Mace, Crossbow, Spear, Bow"],
+  ["The Tempest Bell",4,"Quarterstaff, Crossbow, Bow, Unarmed"],
+  ["Oil",4,"Crossbow, Talisman, Mace, Spear"],
+  ["Heavy Stun",3,"Mace, Quarterstaff, Shield"],
+  ["Power Charges",3,"Quarterstaff, Wand, Talisman"],
+  ["Frenzy Charges",3,"Bow, Spear, Quarterstaff"],
+  ["Lodged & Embedded Munitions",3,"Spear, Crossbow, Bow"],
+  ["Walls, Crystals & Spires",2,"Crossbow, Mace"],
+  ["Marks",2,"Bow, Spear"],
+  ["Corpses",2,"Mace, Wand"],
+  ["Shapeshift & the Set Swap",2,"Staff, Talisman"],
+  ["Clips & Reload",1,"Crossbow only"],
+  ["Rage",1,"Talisman only"]
+];
+const SLOTS = [
+  ["Mace",24,"Mace Strike","Shield Charge (T1), Leap Slam (T3)","Hammer of the Gods (T13)"],
+  ["Crossbow",22,"Crossbow Shot","— none catalogued","Mortar Cannon (T13)"],
+  ["Spear",20,"Spear Throw","Disengage (T1), Thunderous Leap (T9)","Spear of Solaris (T13)"],
+  ["Talisman",17,"form basic attack","Pounce (Werewolf)","Walking Calamity (Bear)"],
+  ["Bow",14,"Bow Shot","Escape Shot (T1)","Barrage (T11)"],
+  ["Quarterstaff",13,"Quarterstaff Strike","Staggering Palm (T3)","Flicker Strike (T11)"],
+  ["Flail",1,"Flail Strike","— none","— none"]
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const MAX = 10;
+const KEY = [["closed","s1","Closed loop"],["exports","s2","Exports"],["imports","s3","Imports"]];
+
+function bars(){
+  document.getElementById("barsA").innerHTML = CLOSURE.map(d => {
+    const tot = d.closed + d.exports + d.imports;
+    const segs = KEY.filter(([k]) => d[k] > 0).map(([k, cls, name]) =>
+      `<span class="seg ${cls}" style="flex:${d[k]}" data-tip="${esc(d.w)} · ${name}: ${d[k]}">${d[k]}</span>`).join("");
+    return `<div class="row">
+      <span class="rname">${esc(d.w)}</span>
+      <span class="bar" style="width:${Math.max(tot / MAX * 100, 2)}%">${segs}</span>
+      <span class="rtot">${tot}</span></div>`;
+  }).join("");
+
+  document.getElementById("tblAbox").innerHTML = `<table>
+    <thead><tr><th>Weapon</th><th class="n">Closed</th><th class="n">Exports</th><th class="n">Imports</th><th class="n">Total</th></tr></thead>
+    <tbody>${CLOSURE.map(d => `<tr><td>${esc(d.w)}</td><td class="n">${d.closed}</td><td class="n">${d.exports}</td><td class="n">${d.imports}</td><td class="n">${d.closed+d.exports+d.imports}</td></tr>`).join("")}</tbody></table>`;
+
+  document.getElementById("tblB").innerHTML = REACH.map(([n, c, w]) =>
+    `<tr><td>${esc(n)}${c === 1 ? ' <span class="mono" style="font-size:10px;color:var(--asum)">PRIVATE</span>' : ""}</td><td class="n">${c}</td><td>${esc(w)}</td></tr>`).join("");
+
+  document.getElementById("tblC").innerHTML = SLOTS.map(r =>
+    `<tr><td>${esc(r[0])}</td><td class="n">${r[1]}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`).join("");
+}
+
+/* provenance filter */
+const off = new Set();
+function applyFilter(){
+  const blocks = document.querySelectorAll(".claim");
+  let shown = 0;
+  blocks.forEach(b => {
+    const hide = off.has(b.dataset.prov);
+    b.hidden = hide;
+    if(!hide) shown++;
+  });
+  document.getElementById("fcount").textContent = shown + " of " + blocks.length + " claims shown";
+}
+document.querySelectorAll(".fchip").forEach(c => c.addEventListener("click", () => {
+  const p = c.dataset.p;
+  if(off.has(p)) off.delete(p); else off.add(p);
+  c.setAttribute("aria-pressed", String(!off.has(p)));
+  applyFilter();
+}));
+
+/* table view toggle */
+const tA = document.getElementById("tblA");
+tA.addEventListener("click", () => {
+  const box = document.getElementById("tblAbox");
+  const open = box.hidden;
+  box.hidden = !open;
+  tA.setAttribute("aria-expanded", String(open));
+  tA.textContent = open ? "Hide table" : "Show as table";
+});
+
+/* hover tooltip on bar segments */
+const tip = document.getElementById("tip");
+document.addEventListener("mouseover", e => {
+  const s = e.target.closest("[data-tip]");
+  if(!s) return;
+  tip.textContent = s.dataset.tip;
+  tip.style.opacity = "1";
+});
+document.addEventListener("mousemove", e => {
+  if(tip.style.opacity !== "1") return;
+  tip.style.left = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8) + "px";
+  tip.style.top = (e.clientY - 30) + "px";
+});
+document.addEventListener("mouseout", e => {
+  if(e.target.closest("[data-tip]")) tip.style.opacity = "0";
+});
+
+bars();
+applyFilter();
+</script>
