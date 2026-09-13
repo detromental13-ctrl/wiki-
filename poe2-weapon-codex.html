@@ -139,14 +139,15 @@ main{min-width:0}
 .ladder h3, .secth{font-family:Spectral,serif;font-size:13px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);margin-bottom:14px}
 .tier{display:grid;grid-template-columns:78px minmax(0,1fr);gap:18px;position:relative}
 .tier:last-child .gut::after{display:none}
-.gut{position:relative;padding-top:2px}
-.gut::after{content:"";position:absolute;left:23px;top:34px;bottom:-8px;width:1px;background:linear-gradient(var(--spine),var(--line-soft))}
+.gut{position:relative;padding-top:2px;display:flex;flex-direction:column;align-items:center}
+.gut::after{content:"";position:absolute;left:50%;top:56px;bottom:-8px;width:1px;background:linear-gradient(var(--spine),var(--line-soft))}
 .gemno{
   width:46px;height:46px;border-radius:50%;border:1px solid var(--spine);
   background:var(--surface);display:grid;place-items:center;
   font-family:"JetBrains Mono",monospace;font-weight:700;font-size:15px;color:var(--accent);
 }
-.gemlbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:center;width:46px;margin-top:5px;line-height:1.3;font-weight:700}
+.gemno.wide{width:auto;min-width:46px;padding:0 11px;border-radius:22px;font-size:11px;letter-spacing:.07em}
+.gemlbl{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:center;width:100%;margin-top:5px;line-height:1.3;font-weight:700}
 .tbody{padding-bottom:26px;min-width:0}
 .tname{font-family:Spectral,serif;font-size:17px;font-weight:600;margin:8px 0 2px}
 .tnote{font-size:12.5px;color:var(--faint);margin:0 0 12px}
@@ -251,17 +252,17 @@ footer.end a{color:var(--accent)}
       <h1>Wraeclast Weapon Codex</h1>
       <div class="sub">Weapon skill trees &amp; their interactions</div>
     </div>
-    <span class="ver mono">PATCH 0.5.x · RETURN OF THE ANCIENTS</span>
+    <span class="ver mono">PATCH 0.5.5 · FORBIDDEN RITES</span>
     <label class="search" for="q">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
-      <input id="q" type="search" placeholder="Search 150+ skills, tags, states…" autocomplete="off">
+      <input id="q" type="search" placeholder="Search skills, weapons, tags, states…" autocomplete="off">
     </label>
   </div>
 </header>
 
 <div class="wrap">
   <div class="notice">
-    <b>How to read this codex.</b> Path of Exile 2 has no literal per-weapon passive tree. What it has is two systems that together behave like one: skills are gated behind <b>Uncut Skill Gem tiers</b> (Lv. 1 / 3 / 5 / 7 / 9 / 11 / 13) and filtered by the weapon in your hand, and the passive tree carries <b>24 Weapon Set passive points</b> that let you grow a second, separate specialisation for your off-set weapon. Each page below is one weapon's gem ladder; the <b>Interaction Atlas</b> is where the two sets meet.
+    <b>How to read this codex.</b> Path of Exile 2 has no literal per-weapon passive tree. What it has is two systems that together behave like one: skills are gated behind <b>Uncut Skill Gem tiers</b> (Lv. 1 / 3 / 5 / 7 / 9 / 11 / 13) and filtered by the weapon in your hand, and the passive tree carries <b>24 Weapon Set passive points</b> that let you grow a second, separate specialisation for your off-set weapon. Twelve weapon categories are covered below, each with its own ladder; the <b>Interaction Atlas</b> is where two sets meet. Talismans are the exception that proves the rule &mdash; they are organised by <b>beast form</b> rather than gem tier, because the form <i>is</i> the skill list.
   </div>
 
   <div class="cols">
@@ -272,7 +273,9 @@ footer.end a{color:var(--accent)}
 </div>
 
 <footer class="end">
-  <p><b>Accuracy note.</b> Skill rosters and gem tiers here reflect the 0.5.x <i>Return of the Ancients</i> era and are assembled from community databases and build guides, which disagree with each other on exact numbers more often than you would hope. Entries marked <span class="unsure">†</span> are ones I could not corroborate — treat the tier as a best guess and confirm at a Gemcutting bench. Mechanics and interactions are the durable part; individual tier numbers are the part patch notes move. Swords and the Duelist are not in 0.5.x — they arrive at 1.0.</p>
+  <p><b>Accuracy note.</b> This codex reflects patch <b>0.5.5</b> and the <i>Forbidden Rites</i> event, which launched 4 September 2026 on a fresh economy alongside the running league. It is assembled from community databases and build guides, which disagree with each other on exact numbers more often than you would hope. Entries marked <span class="unsure">†</span> are ones I could not corroborate — treat the tier as a best guess and confirm at a Gemcutting bench.</p>
+  <p><b>What is firm and what is not.</b> Weapon categories, the mechanics on each page, and every interaction in the Atlas are the durable parts. Individual <i>gem tier numbers</i> for martial weapons are the soft part — patch notes move them, and the sources I could reach contradicted each other. Talisman, wand, sceptre and staff pages carry no tier numbers at all, because those weapons genuinely do not use them: forms and implicits are not bench-gated.</p>
+  <p><b>Known gaps.</b> Flail has only its default attack listed; I could not confirm a fuller roster and chose not to invent one. Sceptre's page lists what Spirit buys rather than a gated gem list, since Spirit skills are mostly weapon-agnostic. Swords and the Duelist are not in 0.5.x — they arrive at 1.0.</p>
 </footer>
 
 <script>
@@ -530,32 +533,116 @@ const W = [
   ]
 },
 {
-  id:"flail", name:"Flail", sub:"One-Hand · STR / INT", attr:"STR / INT", cls:"—",
-  tagline:"The item class is in the game. The tree around it is not, yet.",
-  identity:"Flails are a one-handed martial weapon class requiring Strength and Intelligence, built around wide radial blows with an elemental character. They exist as bases and as uniques — but the Strength/Intelligence class they were clearly shaped for is not released in 0.5.x, and I could not corroborate a dedicated flail gem roster from any source I could reach. Rather than invent one, this page states what is verifiable and stops.",
-  unverified:"No dedicated flail skill ladder is documented here because I could not confirm one. If your Gemcutting bench shows flail-gated skills, that list is real and this page is incomplete — trust the bench.",
+  id:"flail", name:"Flail", sub:"One-Hand · Cannot dual wield", attr:"STR / INT", cls:"—",
+  tagline:"The item class is in the game. Most of the tree around it is not, yet.",
+  identity:"Flails are one-handed martial weapons requiring Strength with a measure of Intelligence, built for fast attacks and wide radial arcs rather than single heavy blows. They notably <em>cannot be dual wielded</em>, so the off-hand always goes to a shield or focus. Bases and uniques exist and a default <em>Flail Strike</em> is in the game — but the Strength/Intelligence class they were clearly shaped for has not arrived, and I could not corroborate a full flail gem roster from any source reachable from here. Rather than invent one, this page states what is verifiable and stops.",
+  unverified:"Only the default attack is listed. If your Gemcutting bench shows flail-gated skills beyond it, that list is real and this page is incomplete — trust the bench.",
   cores:[
     {h:"Attribute identity",b:"Strength with a measure of Intelligence — the hybrid axis that in Path of Exile 1 belonged to the Templar."},
-    {h:"Radial blows",b:"Flail attacks arc widely rather than landing on a point, giving them natural pack coverage for a one-hander."},
-    {h:"One-handed",b:"Leaves the off-hand free for a shield or focus, so flail characters inherit the shield skills and block mechanics wholesale."},
-    {h:"Cross-set glue",b:"Until a native roster exists, the practical use of a flail is a Set II that carries different passive specialisation and item mods rather than different skills."}
+    {h:"Fast and radial",b:"Flails trade the mace's single enormous hit for speed and wide arcs, giving a one-hander unusually good pack coverage."},
+    {h:"No dual wielding",b:"The off-hand is always free for a shield or focus, so flail characters inherit the shield skills and block mechanics wholesale."},
+    {h:"Cross-set glue",b:"Until a native roster exists, the practical use of a flail is a Set II carrying different passive specialisation and item mods rather than different skills."}
   ],
-  tiers:[]
+  groups:[
+   {k:"BASE",sub:"Default",name:"Confirmed",note:"The one flail skill I can state with confidence.",s:[
+     {n:"Flail Strike",dflt:1,tags:["phys"],r:"The free default flail attack. Fast, wide, and the baseline any future flail gem would improve on."}
+   ]}
+  ]
 },
 {
-  id:"caster", name:"Wand · Sceptre · Staff", sub:"Caster weapons", attr:"INT", cls:"Witch / Sorceress",
-  tagline:"These weapons don't gate gems. They grant skills outright.",
-  identity:"Caster weapons work on a completely different principle from martial weapons, and it catches people out. Wands, sceptres and staves do not unlock a gem list — instead each <em>base type</em> carries an inherent granted skill as an implicit, scaling its level and attribute requirements off the item's item level. Your spell list comes from gems that need no weapon at all; what the weapon supplies is one free skill, plus the damage and Spirit that everything else scales from.",
+  id:"talisman", name:"Talisman", sub:"Two-Hand · Shapeshift", attr:"STR / INT", cls:"Druid — any class",
+  tagline:"The only weapon whose skill list replaces your body.",
+  identity:"Talismans are the strangest weapon in the game and the sharpest argument for why weapon sets exist at all. Equipping an Animal Talisman in your <em>active</em> set immediately shapeshifts you into its beast — Bear, Werewolf or Wyvern — and swaps your whole skill list for that form's Primal skills plus a form-specific basic attack. They behave as two-handers and lock out every other weapon while equipped. They arrived alongside the Druid in 0.4, but they are not Druid-locked: any class can pick one up and shapeshift.",
   cores:[
-    {h:"Granted skills, not gems",b:"Power Siphon, Volatile Dead and their siblings arrive on the weapon base itself. Changing weapon changes that skill."},
-    {h:"Sceptres carry Spirit",b:"Spirit is the reservation resource for Heralds, banners and persistent minions — and it leaves with the weapon when you swap sets."},
-    {h:"Staves scale spells",b:"Two-handed, no off-hand, heaviest spell damage. The straightforward caster choice."},
-    {h:"The swap caveat",b:"Anything reserved by Spirit from a weapon stops when that weapon is not in the active set. Plan Set II around this, not against it."}
+    {h:"The talisman is the form",b:"You do not cast a transformation — the weapon in your active set decides what you are. A weapon swap is a shapeshift, and that is the entire build-defining interaction."},
+    {h:"Rage",b:"The beast-form resource, generated on hit and spent to empower attacks. Bear leans on it hardest; Werewolf's Lunar Blessing turns spending it into cold damage."},
+    {h:"Human-form spells persist",b:"Spells cast before you shift keep running while you are a beast. This is why the standard setup puts a caster weapon in one set and a talisman in the other."},
+    {h:"Three separate lists",b:"Bear, Werewolf and Wyvern share no skills. Choosing a talisman base is choosing a tree, not a stat line."}
   ],
-  tiers:[
-   {t:1,name:"Representative granted skills",note:"These come from weapon bases, not from a Gemcutting bench — tiers do not apply.",s:[
-     {n:"Power Siphon",tags:["light","util"],r:"Wand implicit. Fires at nearby enemies and returns Power Charges on kill."},
-     {n:"Volatile Dead",tags:["fire"],r:"Wand implicit. Consumes nearby corpses, turning each into a seeking fire orb."}
+  groups:[
+   {k:"BEAR",sub:"Form",name:"Bear Form",note:"Tanky bruiser. Heavy physical slams, roars, and Rage as the engine.",s:[
+     {n:"Maul",tags:["phys"],r:"The bear's bread-and-butter heavy strike."},
+     {n:"Rampage",tags:["phys"],r:"Charging attack that builds momentum as it runs."},
+     {n:"Furious Slam",tags:["phys"],r:"Rage-powered slam — the payoff for a full Rage bar."},
+     {n:"Ferocious Roar",tags:["util"],r:"Roar that buffs you and rattles the pack while generating Rage."},
+     {n:"Walking Calamity",tags:["phys"],r:"The Bear capstone: sustained, rolling devastation rather than one big hit."}
+   ]},
+   {k:"WOLF",sub:"Form",name:"Werewolf Form",note:"Fast cold strikes, aggressive movement, pack-building. The clear-speed form.",s:[
+     {n:"Rake",tags:["phys"],r:"Fast clawing strike. Shares a name with the spear skill and nothing else."},
+     {n:"Pounce",tags:["phys","util"],r:"Leaping gap-closer that opens the combo at range."},
+     {n:"Arctic Howl",tags:["cold"],r:"Cold howl that chills everything around you."},
+     {n:"Lunar Assault",tags:["cold"],r:"Converts physical damage to cold — the switch that makes the whole form cold-scaling."},
+     {n:"Cross Slash",tags:["phys"],r:"Wide two-claw slash for packs."},
+     {n:"Lunar Blessing",tags:["cold","util"],r:"Spends Rage to boost your cold damage. The form's Rage sink."}
+   ]},
+   {k:"WYV",sub:"Form",name:"Wyvern Form",note:"Melee and spell hybrid, running on Power Charges and fire.",s:[
+     {n:"Rend",tags:["phys"],r:"Tearing strike that opens wounds."},
+     {n:"Wing Blast",tags:["phys","util"],r:"Wing gust that generates Power Charges and can be fuelled by Rage."},
+     {n:"Devour",tags:["phys","util"],r:"Consumes your prey for charges and sustain."},
+     {n:"Oil Barrage",tags:["chaos"],r:"Lobs oil across the area. Inert until something sets it alight — and you breathe fire."},
+     {n:"Flame Breath",tags:["fire"],r:"Cone of fire. The natural detonator for your own Oil Barrage."},
+     {n:"Rolling Magma",tags:["fire"],r:"Bouncing magma projectile that keeps finding new targets."}
+   ]}
+  ]
+},
+{
+  id:"wand", name:"Wand", sub:"One-Hand · Caster", attr:"INT", cls:"Witch / Sorceress",
+  tagline:"Half your spell list arrives on the weapon itself.",
+  identity:"Wands run on two tracks at once, and conflating them is the most common mistake people make with caster gear. First, every wand base carries an <em>implicit granted skill</em> — Chaos Bolt, Firebolt, Decompose, Power Siphon and their siblings arrive on the item, scale their level and attribute requirements off its item level, and change the instant you change wands. Second, a handful of gem skills specifically require a wand. Your general spell list, meanwhile, needs no weapon at all. What the wand supplies is spell damage, one free skill, and a one-handed slot that leaves the off-hand open.",
+  cores:[
+    {h:"Granted skills are implicits",b:"The skill is a property of the base type, not a gem you engrave. Picking a wand base is picking a skill."},
+    {h:"Item level scales them",b:"A granted skill's level and attribute requirements scale off the item, not a gem — a high item-level base is a high-level skill."},
+    {h:"Granted skills cost no Spirit",b:"Skills granted by items do not reserve Spirit, which makes item-granted persistent effects effectively free."},
+    {h:"One-handed",b:"Leaves the off-hand for a focus, a shield, or a second wand."}
+  ],
+  groups:[
+   {k:"IMPL",sub:"Implicit",name:"Granted by the wand base",note:"These appear as implicits on wands and staves. No Gemcutting bench involved — no tier applies.",s:[
+     {n:"Chaos Bolt",tags:["chaos"],r:"Withered Wand implicit. Inflicts stacks of Withered on hit, compounding chaos damage taken."},
+     {n:"Decompose",tags:["chaos"],r:"Acrid Wand implicit. Consumes a corpse to create a cloud of flammable poisonous gas — a corpse converted into a bomb waiting for a match."},
+     {n:"Power Siphon",tags:["light","util"],r:"Fires at nearby enemies and returns Power Charges on kill."},
+     {n:"Firebolt",tags:["fire"],r:"Straightforward fire projectile. The starter implicit."},
+     {n:"Freezing Shards",tags:["cold"],r:"Cold projectiles with real Freeze buildup."},
+     {n:"Lightning Bolt",tags:["light"],r:"Lightning projectile; shocks with enough damage behind it."},
+     {n:"Bone Blast",tags:["phys"],r:"Physical bone spell for builds scaling spell damage without an element."},
+     {n:"Solar Orb",tags:["fire"],r:"Slow-travelling orb of fire that burns everything it drifts past."}
+   ]}
+  ]
+},
+{
+  id:"sceptre", name:"Sceptre", sub:"One-Hand · Spirit", attr:"STR / INT", cls:"Witch / Warbringer",
+  tagline:"The weapon you buy for a number that isn't damage.",
+  identity:"The sceptre is the Spirit weapon. Spirit is the reservation pool that keeps Heralds, banners, persistent minions and other always-on skills running, and sceptres are the single largest source of it on gear. That makes a sceptre less a way to deal damage than a way to <em>afford</em> your build's permanent effects — and it makes the sceptre the weapon most distorted by weapon swapping, because Spirit granted by a weapon stops existing the moment that weapon leaves your active set.",
+  cores:[
+    {h:"Spirit reservation",b:"The pool that pays for permanent skills. More Spirit is strictly more build, not more damage per hit."},
+    {h:"Minions and auras",b:"Sceptre builds are minion armies and aura stackers — the archetypes that live entirely off reservation."},
+    {h:"Item-granted skills are free",b:"A skill granted by an item reserves no Spirit at all, so a unique that summons a minion costs you nothing from the pool."},
+    {h:"The swap trap",b:"A sceptre's Spirit leaves with the sceptre, and anything it was reserving drops on swap. Reserve from armour and passives if it must survive Set II."}
+  ],
+  groups:[
+   {k:"SPRT",sub:"Reserves",name:"What Spirit buys",note:"Spirit skills are mostly weapon-agnostic — the sceptre is how you afford them, not what gates them.",s:[
+     {n:"Raging Spirits",tags:["fire","spirit"],r:"Reserves 30 Spirit. Your Fire Spells summon short-lived flaming skulls that rush in and attack."},
+     {n:"Heralds",tags:["spirit"],r:"Persistent on-kill or on-hit effects that propagate damage through a pack. The classic reservation purchase."},
+     {n:"Banners",tags:["spirit"],r:"Planted auras — Defiance Banner and War Banner are Mercenary staples bought with Spirit."},
+     {n:"Persistent minions",tags:["spirit"],r:"Permanent summons hold their Spirit for as long as they live, which is what makes raw Spirit the minion build's damage stat."}
+   ]}
+  ]
+},
+{
+  id:"staff", name:"Staff", sub:"Two-Hand · Caster", attr:"INT", cls:"Witch / Sorceress / Druid",
+  tagline:"Two hands, no compromises, the biggest spell numbers.",
+  identity:"Staves are the uncomplicated caster weapon: two-handed, no off-hand, and the largest spell-damage and gem-level modifiers available. They share the implicit granted-skill system with wands — a staff base carries its own inherent skill scaling off item level — and gate a few gem skills of their own. For the Druid they play a second role entirely: a staff in the set <em>opposite</em> your talisman is how you cast human-form spells that keep running after you shift.",
+  cores:[
+    {h:"Biggest spell modifiers",b:"Two-handed means the heaviest spell damage rolls and the best +levels to gems in the game."},
+    {h:"Shares the wand implicit pool",b:"Bone Blast, Firebolt, Solar Orb and the rest appear on staff bases as well as wands."},
+    {h:"Not the quarterstaff",b:"A recurring confusion: Charged Staff, Ice Strike and Tempest Flurry are <em>quarterstaff</em> skills. A staff is a caster weapon and shares none of them."},
+    {h:"The Druid's other half",b:"Human-form spells cast from a staff persist through shapeshift, which is why the standard Druid pairing is staff in one set, talisman in the other."}
+  ],
+  groups:[
+   {k:"HUMAN",sub:"Spells",name:"Human-form spells",note:"Not staff-gated — these are spell gems any caster weapon can cast. Listed here because they are the half of the Druid that a staff set exists to deliver.",s:[
+     {n:"Thunderstorm",tags:["light"],r:"Persistent storm that keeps striking after you have shifted and walked away."},
+     {n:"Volcano",tags:["fire"],r:"Long-lasting totem-like eruption. Cast it, then shift and let it work."},
+     {n:"Entangle",tags:["chaos","util"],r:"Roots and holds a pack in place — set up before you dive in as a beast."},
+     {n:"Tornado",tags:["util"],r:"Roaming wind that drags and damages while you fight in melee."}
    ]}
   ]
 },
@@ -585,7 +672,7 @@ const CHAINS = [
 {
   id:"gas", name:"Gas Cloud", hue:"chaos",
   d:"A lingering cloud that deals almost nothing by itself and detonates for an enormous Fire hit the moment any Fire damage touches it. The most valuable cross-weapon interaction in the game, and the clearest argument for pairing Bow with Crossbow.",
-  p:[["bow","Gas Arrow"],["crossbow","Gas Grenade"],["bow","Poisonburst Arrow"]],
+  p:[["bow","Gas Arrow"],["crossbow","Gas Grenade"],["bow","Poisonburst Arrow"],["wand","Decompose"]],
   c:[["crossbow","Explosive Shot"],["crossbow","Incendiary Shot"],["crossbow","Explosive Grenade"],["mace","Perfect Strike"],["mace","Infernal Cry"],["mace","Volcanic Fissure"],["spear","Explosive Spear"],["spear","Spear of Solaris"]],
   note:"A Bow in Set I and a Crossbow in Set II is the canonical build: lay clouds at range, swap, and light them. But note the mace and spear entries — a Warrior carrying a bow purely for Gas Arrow is a legitimate, and frequently overlooked, use of 24 Weapon Set passive points."
 },
@@ -606,8 +693,8 @@ const CHAINS = [
 {
   id:"power", name:"Power Charges", hue:"light",
   d:"A stacking charge generated by executes and critical strikes and spent for burst. The quarterstaff is the only weapon that both produces and consumes them on demand, which is why the Monk loop feels self-contained in a way other weapons do not.",
-  p:[["quarterstaff","Killing Palm"],["quarterstaff","Siphoning Strike"],["caster","Power Siphon"]],
-  c:[["quarterstaff","Falling Thunder"],["quarterstaff","Charged Staff"]],
+  p:[["quarterstaff","Killing Palm"],["quarterstaff","Siphoning Strike"],["wand","Power Siphon"],["talisman","Wing Blast"],["talisman","Devour"]],
+  c:[["quarterstaff","Falling Thunder"],["quarterstaff","Charged Staff"],["talisman","Lunar Blessing"]],
   note:"The classic Monk rotation is Killing Palm into a pack of weakened enemies to bank charges, then Falling Thunder to spend every charge as a lightning projectile. Charged Staff is the alternative sink: instead of one burst, it converts the charges into a sustained damage conversion on all your strikes."
 },
 {
@@ -620,21 +707,21 @@ const CHAINS = [
 {
   id:"shock", name:"Shock", hue:"light",
   d:"An ailment that increases the damage the shocked enemy takes from all sources. Almost every weapon can apply it; only two skills in the game are built to <em>spend</em> it.",
-  p:[["quarterstaff","Tempest Flurry"],["quarterstaff","Charged Staff"],["quarterstaff","Falling Thunder"],["bow","Lightning Arrow"],["bow","Voltaic Mark"],["bow","Stormcaller Arrow"],["crossbow","Galvanic Shards"],["crossbow","Stormblast Bolts"],["crossbow","Voltaic Grenade"],["spear","Lightning Spear"],["spear","Storm Lance"]],
+  p:[["quarterstaff","Tempest Flurry"],["quarterstaff","Charged Staff"],["quarterstaff","Falling Thunder"],["bow","Lightning Arrow"],["bow","Voltaic Mark"],["bow","Stormcaller Arrow"],["crossbow","Galvanic Shards"],["crossbow","Stormblast Bolts"],["crossbow","Voltaic Grenade"],["spear","Lightning Spear"],["spear","Storm Lance"],["staff","Thunderstorm"],["wand","Lightning Bolt"]],
   c:[["crossbow","Shockburst Rounds"],["spear","Elemental Sundering"]],
   note:"Galvanic Shards into Shockburst Rounds is a two-clip crossbow rotation that never leaves the weapon — apply with the chaining clip, cash in with the burst clip, Emergency Reload to skip the downtime. Elemental Sundering is the cross-set version: let Set I paint the pack with Shock, Chill and Ignite, then swap to a spear and consume all three at once."
 },
 {
   id:"cold", name:"Chill & Freeze", hue:"cold",
   d:"Chill slows; enough buildup Freezes outright. Freeze is both a defensive layer and a consumable, and it is the most reliably applied ailment in the game because so many multi-hit skills carry cold.",
-  p:[["quarterstaff","Ice Strike"],["spear","Fangs of Frost"],["spear","Glacial Lance"],["crossbow","Permafrost Bolts"],["crossbow","Glacial Bolt"],["crossbow","Hailstorm Rounds"],["bow","Freezing Salvo"],["bow","Escape Shot"]],
-  c:[["spear","Elemental Sundering"],["quarterstaff","Tempest Bell"]],
+  p:[["quarterstaff","Ice Strike"],["spear","Fangs of Frost"],["spear","Glacial Lance"],["crossbow","Permafrost Bolts"],["crossbow","Glacial Bolt"],["crossbow","Hailstorm Rounds"],["bow","Freezing Salvo"],["bow","Escape Shot"],["talisman","Arctic Howl"],["talisman","Lunar Assault"],["wand","Freezing Shards"]],
+  c:[["spear","Elemental Sundering"],["quarterstaff","Tempest Bell"],["talisman","Lunar Blessing"]],
   note:"A frozen Tempest Bell adds cold to what its strikes deal — the bell inherits the element you have been feeding it, which is why Ice Strike and the bell are so often run together. Combat Frenzy also converts these ailments into Frenzy Charges, making a cold Set I into the fuel supply for an entirely unrelated Set II."
 },
 {
   id:"fire", name:"Ignite & Burning Ground", hue:"fire",
   d:"Fire's contribution to the interaction economy is less about the ailment's own damage and more about the fact that fire is the universal detonator: gas, oil and corpses all answer to it.",
-  p:[["mace","Perfect Strike"],["mace","Infernal Cry"],["mace","Volcanic Fissure"],["crossbow","Incendiary Shot"],["crossbow","Explosive Grenade"],["crossbow","Cluster Grenade"],["spear","Explosive Spear"],["spear","Spear of Solaris"]],
+  p:[["mace","Perfect Strike"],["mace","Infernal Cry"],["mace","Volcanic Fissure"],["crossbow","Incendiary Shot"],["crossbow","Explosive Grenade"],["crossbow","Cluster Grenade"],["spear","Explosive Spear"],["spear","Spear of Solaris"],["talisman","Flame Breath"],["talisman","Rolling Magma"],["staff","Volcano"],["wand","Solar Orb"]],
   c:[["spear","Elemental Sundering"]],
   note:"Read this chain alongside Gas Cloud and Oil. Any skill listed as a producer here is simultaneously a detonator for two other chains — which is why a single fire skill in a second weapon set repays its slot several times over."
 },
@@ -670,8 +757,8 @@ const CHAINS = [
   id:"corpses", name:"Corpses", hue:"fire",
   d:"Dead enemies are a resource in two different trees, which almost never overlap in practice — and that is exactly the gap a weapon set swap exists to close.",
   p:[["mace","Infernal Cry"]],
-  c:[["caster","Volatile Dead"]],
-  note:"Infernal Cry's Combustion turns a pack into delayed-action bombs; Volatile Dead consumes corpses directly into seeking fire orbs. A Warrior with a wand in Set II can run both halves of a corpse economy that neither tree supports alone."
+  c:[["wand","Decompose"]],
+  note:"Infernal Cry's Combustion turns a pack into delayed-action bombs. Decompose goes further and chains into a second state entirely: it eats a corpse and leaves a cloud of <em>flammable</em> poisonous gas, so one wand implicit converts a dead body into a Gas Cloud waiting for a match. A Warrior carrying an Acrid Wand in Set II runs a corpse economy no martial tree supports alone."
 },
 {
   id:"ammo", name:"Clips & Reload", hue:"phys",
@@ -679,13 +766,37 @@ const CHAINS = [
   p:[["crossbow","Armour Piercing Rounds"],["crossbow","Galvanic Shards"],["crossbow","Permafrost Bolts"],["crossbow","Fragmentation Rounds"],["crossbow","Stormblast Bolts"],["crossbow","High Velocity Rounds"]],
   c:[["crossbow","Emergency Reload"],["crossbow","Explosive Grenade"],["crossbow","Gas Grenade"],["crossbow","Flash Grenade"]],
   note:"Grenades are the elegant answer: they are thrown rather than fired, so they cost no clip and fill the reload window with useful damage. Emergency Reload is the blunt answer. The third answer is a weapon set swap — changing weapons resets what you are doing entirely, which is why crossbow characters get unusual value from Set II."
+},
+{
+  id:"oil", name:"Oil", hue:"chaos",
+  d:"Slick ground and coated enemies that do nothing on their own and burn ferociously the moment fire touches them. Mechanically a sibling of Gas Cloud, but applied to targets rather than left in the air.",
+  p:[["crossbow","Oil Grenade"],["talisman","Oil Barrage"]],
+  c:[["talisman","Flame Breath"],["talisman","Rolling Magma"],["crossbow","Explosive Shot"],["crossbow","Incendiary Shot"],["mace","Perfect Strike"],["spear","Explosive Spear"]],
+  note:"The Wyvern is the only form in the game that carries both halves natively — Oil Barrage coats the pack, Flame Breath lights it — which makes it a complete combo inside one weapon. Everyone else buys the second half from a crossbow."
+},
+{
+  id:"rage", name:"Rage", hue:"phys",
+  d:"The beast-form resource. Generated by landing hits while shapeshifted and spent to empower specific skills. It exists only while you are in a form, so it does not survive a swap back to human.",
+  p:[["talisman","Ferocious Roar"],["talisman","Maul"],["talisman","Rampage"],["talisman","Rend"]],
+  c:[["talisman","Furious Slam"],["talisman","Lunar Blessing"],["talisman","Wing Blast"]],
+  note:"Each form spends Rage differently, and that is the real choice between talismans. Bear banks it for Furious Slam. Werewolf pours it into Lunar Blessing to scale cold. Wyvern feeds it to Wing Blast alongside Power Charges — the only form running two resources at once."
+},
+{
+  id:"shift", name:"Shapeshift & the Set Swap", hue:"spirit",
+  pl:"Cast in human form", cl:"Then fight as",
+  d:"The single largest interaction in the codex, and the only one where the weapon swap <em>is</em> the combo. Equipping a talisman in your active set shapeshifts you instantly; spells you cast beforehand keep running while you are a beast.",
+  p:[["staff","Volcano"],["staff","Thunderstorm"],["staff","Entangle"],["staff","Tornado"]],
+  c:[["talisman","Pounce"],["talisman","Furious Slam"],["talisman","Flame Breath"],["talisman","Walking Calamity"]],
+  note:"The canonical Druid configuration is a caster weapon in Set I and a talisman in Set II. Lay down Volcano and Entangle as a human, swap, and land in the middle of your own artillery as a bear. Because the talisman locks out every other weapon, this is also the only case where your two sets cannot share a single skill — they are two genuinely separate characters joined by one keypress."
 }
 ];
 
 /* ============ INDEX ============ */
 const byId = Object.fromEntries(W.map(w=>[w.id,w]));
 const ALL = [];
-W.forEach(w=>(w.tiers||[]).forEach(t=>t.s.forEach(s=>ALL.push({...s,w:w.id,wn:w.name,t:t.t}))));
+const rows = w => w.groups ? w.groups.map(g=>({key:g.k,sub:g.sub,name:g.name,note:g.note,s:g.s,wide:1}))
+                           : (w.tiers||[]).map(t=>({key:t.t,sub:"Gem<br>Lv.&nbsp;"+t.t,name:t.name,note:t.note,s:t.s}));
+W.forEach(w=>rows(w).forEach(g=>g.s.forEach(s=>ALL.push({...s,w:w.id,wn:w.name,t:g.key,tl:w.groups?g.name:"Gem Lv. "+g.key}))));
 const findSkill = (wid,nm)=>ALL.find(s=>s.w===wid && s.n===nm);
 /* derive produces/consumes per skill from CHAINS */
 const SREL = {};
@@ -736,8 +847,8 @@ function drawWeapon(w){
     <div class="tagline">${esc(w.tagline)}</div>
     <div class="meta">
       <span class="mchip">ATTR <b>${esc(w.attr)}</b></span>
-      <span class="mchip">SKILLS <b>${(w.tiers||[]).reduce((a,t)=>a+t.s.length,0)}</b></span>
-      <span class="mchip">TIERS <b>${(w.tiers||[]).length?(w.tiers.map(t=>t.t).join(" · ")):"—"}</b></span>
+      <span class="mchip">SKILLS <b>${rows(w).reduce((a,g)=>a+g.s.length,0)}</b></span>
+      <span class="mchip">${w.groups?"FORMS":"GEM TIERS"} <b>${rows(w).length?rows(w).map(g=>g.key).join(" · "):"—"}</b></span>
     </div>
     <p class="prose">${w.identity}</p>
   </div>`;
@@ -748,15 +859,16 @@ function drawWeapon(w){
     h += `<div class="notice" style="margin-top:22px"><b>Incomplete on purpose.</b> ${esc(w.unverified)}</div>`;
   }
 
-  if((w.tiers||[]).length){
-    h += `<div class="ladder"><h3>Gem ladder — by Uncut Skill Gem tier</h3>`;
-    w.tiers.forEach(t=>{
+  const gs = rows(w);
+  if(gs.length){
+    h += `<div class="ladder"><h3>${w.groups?"Skill list — by beast form":"Gem ladder — by Uncut Skill Gem tier"}</h3>`;
+    gs.forEach(g=>{
       h += `<div class="tier">
-        <div class="gut"><div class="gemno">${t.t}</div><div class="gemlbl">Gem<br>Lv.&nbsp;${t.t}</div></div>
+        <div class="gut"><div class="gemno${g.wide?" wide":""}">${g.key}</div><div class="gemlbl">${g.sub}</div></div>
         <div class="tbody">
-          ${t.name?`<div class="tname">${esc(t.name)}</div>`:""}
-          ${t.note?`<p class="tnote">${esc(t.note)}</p>`:(t.name?'<div style="height:8px"></div>':"")}
-          <div class="grid">${t.s.map(s=>skillCard(s,w.id)).join("")}</div>
+          ${g.name?`<div class="tname">${esc(g.name)}</div>`:""}
+          ${g.note?`<p class="tnote">${esc(g.note)}</p>`:(g.name?'<div style="height:8px"></div>':"")}
+          <div class="grid">${g.s.map(s=>skillCard(s,w.id)).join("")}</div>
         </div></div>`;
     });
     h += `</div>`;
@@ -788,9 +900,9 @@ function drawAtlas(){
         <p>${ch.d}</p>
       </header>
       <div class="flow">
-        <div class="side p"><h5>Produced by</h5>${refList(ch.p)}</div>
+        <div class="side p"><h5>${esc(ch.pl||"Produced by")}</h5>${refList(ch.p)}</div>
         <div class="arrow mono">&rarr;</div>
-        <div class="side c"><h5>Consumed by</h5>${refList(ch.c)}</div>
+        <div class="side c"><h5>${esc(ch.cl||"Consumed by")}</h5>${refList(ch.c)}</div>
       </div>
       <div class="foot">${ch.note}</div>
     </section>`;
@@ -810,6 +922,14 @@ function drawSystems(){
     <p>Skills are not learned, bought, or unlocked by class. They are <strong>engraved</strong> onto Uncut Skill Gems, which drop at a level. When you open the Gemcutting menu, the game shows you every skill whose tier is at or below the gem's level <strong>and</strong> which your currently equipped weapon can use. Change the weapon in your hand and the list changes with it.</p>
     <p>Skill tiers run <strong>1, 3, 5, 7, 9, 11 and 13</strong>. A Tier 7 skill needs a Level 7 or higher Uncut Skill Gem — and separately, you must meet the skill's own character level requirement, which a high-tier gem does not waive. Gem levels above 13 do not unlock new skills; they raise the level of the skill you engrave, with their own steep character requirements at the top end (roughly level 78 for an 18, 84 for a 19, 90 for a 20).</p>
     <p>This is why "weapon skill tree" is a reasonable mental model even though no such screen exists: the set of skills a weapon can reach, ordered by the tier that gates them, <em>is</em> that weapon's progression.</p>
+  </section>
+
+  <section class="sblock"><h3>Three weapons that ignore the bench</h3>
+    <p>Not every skill comes from a Gemcutting bench, and the exceptions are exactly the weapons people find confusing.</p>
+    <p><strong>Wands and staves grant skills as implicits.</strong> A wand base carries a skill as a property of the item — Chaos Bolt, Decompose, Firebolt, Freezing Shards, Lightning Bolt, Power Siphon, Bone Blast, Solar Orb — whose level and attribute requirements scale off the item's item level rather than a gem's level. Change the base, change the skill. These coexist with gem skills that require a wand or staff; it is not one or the other.</p>
+    <p><strong>Talismans replace your skill list entirely.</strong> Equipping one in the active set shapeshifts you, and the form supplies its own Primal skills and its own basic attack. There is no engraving step and no tier gate — the base you equip decides which of the three lists you get.</p>
+    <p><strong>Skills granted by items reserve no Spirit.</strong> This is the quiet reason unique weapons that summon minions or run persistent effects are so strong: they sidestep the reservation budget that the equivalent gem would charge you.</p>
+    <p>One more naming trap worth stating plainly: the <strong>staff</strong> and the <strong>quarterstaff</strong> are unrelated weapons. A staff is a two-handed caster weapon; a quarterstaff is the Monk's melee weapon. Charged Staff is a quarterstaff skill despite the name.</p>
   </section>
 
   <section class="sblock"><h3>Weapon Sets and the 24 specialised points</h3>
@@ -835,6 +955,7 @@ function drawSystems(){
     <p><strong>Spirit skills</strong> — Heralds, banners, Wind Dancer, Combat Frenzy, Mirage Archer — reserve Spirit rather than costing mana, and most carry no weapon requirement at all. They are the connective tissue between two weapon sets: Combat Frenzy converting the ailments of one set into Frenzy Charges for the other is the clearest example in the game.</p>
     <p><strong>Support gems</strong> cross trees the same way. Armour Explosion turns Broken Armour into area damage regardless of which weapon broke it. Cast on Melee Stun converts a mace's stuns into triggered spells. Ancestral Call multiplies placed objects like the Tempest Bell. When an interaction in the Atlas looks impossible between two weapons, a support is usually the missing link.</p>
     <p>One caveat that catches people: <strong>Spirit granted by a weapon leaves with that weapon.</strong> A sceptre's Spirit reservation stops when you swap to Set II, and anything it was reserving drops. Reserve from your body armour and passives if you want it to survive the swap.</p>
+    <p>The same rule read the other way is what makes the Druid work. <strong>Spells persist; weapons do not.</strong> A Volcano or Thunderstorm cast from a staff keeps running after you swap to a talisman and become a bear, because the spell is already in the world and no longer depends on what you are holding. Set I casts, Set II fights, and the swap is the combo.</p>
   </section>
   </div>`;
 }
@@ -860,7 +981,7 @@ function drawSearch(q){
     hits.forEach(s=>(byW[s.w]=byW[s.w]||[]).push(s));
     Object.keys(byW).forEach(wid=>{
       h += `<div class="tname" style="margin-top:16px">${esc(byId[wid].name)}</div>
-        <p class="tnote">Gem tiers ${byW[wid].map(s=>s.t).filter((v,i,a)=>a.indexOf(v)===i).join(", ")}</p>
+        <p class="tnote">${byW[wid].map(s=>s.tl||("Gem Lv. "+s.t)).filter((v,i,a)=>a.indexOf(v)===i).join(" · ")}</p>
         <div class="grid">${byW[wid].map(s=>skillCard(s,wid)).join("")}</div>`;
     });
   }
@@ -876,8 +997,8 @@ function drawDetail(){
     d.innerHTML = `<div class="dhead"><div class="from">Interaction state</div><h3>${esc(ch.name)}</h3>
       <span class="tags">${tagHtml([ch.hue])}</span></div>
       <div class="dsec"><h5>What it is</h5><p>${ch.d}</p></div>
-      <div class="dsec"><h5>Produced by</h5>${refList(ch.p)}</div>
-      <div class="dsec"><h5>Consumed by</h5>${refList(ch.c)}</div>
+      <div class="dsec"><h5>${esc(ch.pl||"Produced by")}</h5>${refList(ch.p)}</div>
+      <div class="dsec"><h5>${esc(ch.cl||"Consumed by")}</h5>${refList(ch.c)}</div>
       <div class="dsec"><h5>How to use it</h5><p>${ch.note}</p></div>`;
     return;
   }
@@ -886,7 +1007,7 @@ function drawDetail(){
   const w = byId[s.w];
   const rel = SREL[s.w+"/"+s.n] || {out:[],in:[]};
   let h = `<div class="dhead">
-    <div class="from">${esc(w.name)} · Gem Lv. ${s.t}${s.dflt?" · default":""}</div>
+    <div class="from">${esc(w.name)} · ${esc(s.tl||("Gem Lv. "+s.t))}${s.dflt?" · default":""}</div>
     <h3>${esc(s.n)}</h3>
     <span class="tags">${tagHtml(s.tags)}</span>
   </div>
@@ -935,7 +1056,7 @@ document.addEventListener("click", e=>{
   if(wb){
     query=""; document.getElementById("q").value="";
     if(wb.dataset.w){ view={mode:"weapon",wid:wb.dataset.w};
-      const first=(byId[wb.dataset.w].tiers[0]||{s:[]}).s[0];
+      const first=(rows(byId[wb.dataset.w])[0]||{s:[]}).s[0];
       if(first) sel={w:wb.dataset.w,n:first.n};
     } else view={mode:wb.dataset.v};
     draw(); window.scrollTo({top:0,behavior:"smooth"}); return;
