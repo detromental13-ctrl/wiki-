@@ -12,6 +12,9 @@
   --chaos:#4f7f34; --util:#6a5a94; --spirit:#8a4b6e;
   --good:#2e7d52; --warn:#9a6a12;
   --spine:#c3a678;
+  --g-ground:#e6e9ef; --g-link:#b4bdc9;
+  --g-strike:#9c5a36; --g-martial:#2f7d8a; --g-ranged:#4a7c37;
+  --g-caster:#63559f; --g-beast:#9c7420; --g-guard:#77808c;
   --shadow:0 1px 2px rgba(20,26,34,.06),0 8px 24px -12px rgba(20,26,34,.18);
 }
 @media (prefers-color-scheme:dark){
@@ -24,6 +27,12 @@
     --chaos:#8ab862; --util:#a596d0; --spirit:#cc82a8;
     --good:#5cbd8b; --warn:#d6a840;
     --spine:#6d5a34;
+  --g-ground:#0e1116; --g-link:#2e3742;
+  --g-strike:#d98a5c; --g-martial:#4fb3c4; --g-ranged:#7fbb5c;
+  --g-caster:#9b8ae0; --g-beast:#d6a53f; --g-guard:#9aa5b2;
+    --g-ground:#0e1116; --g-link:#2e3742;
+    --g-strike:#d98a5c; --g-martial:#4fb3c4; --g-ranged:#7fbb5c;
+    --g-caster:#9b8ae0; --g-beast:#d6a53f; --g-guard:#9aa5b2;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -14px rgba(0,0,0,.7);
   }
 }
@@ -236,6 +245,34 @@ aside.detail{position:sticky;top:88px;max-height:calc(100vh - 110px);overflow-y:
 .tbl td:first-child{font-weight:600;color:var(--text);white-space:nowrap;padding-right:18px}
 .tbl td{color:var(--dim)}
 .scroll{overflow-x:auto}
+
+/* ---------- graph ---------- */
+.gtools{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:22px 0 12px}
+.gchk{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--dim);cursor:pointer;user-select:none}
+.gchk input{accent-color:var(--accent);margin:0;width:14px;height:14px}
+.gbtn{font:inherit;font-size:12.5px;color:var(--dim);background:var(--surface);border:1px solid var(--line);
+  border-radius:3px;padding:4px 11px;cursor:pointer}
+.gbtn:hover{border-color:var(--accent-2);color:var(--text)}
+.gbtn:focus-visible,.gchk input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.gstat{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--faint);margin-left:auto;letter-spacing:.03em}
+.gwrap{position:relative;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--g-ground)}
+#gcanvas{display:block;width:100%;height:66vh;min-height:440px;cursor:grab;touch-action:none}
+#gcanvas.grabbing{cursor:grabbing}
+#gcanvas.onnode{cursor:pointer}
+.gzoom{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.gzb{width:28px;height:28px;font:inherit;font-size:15px;line-height:1;color:var(--dim);
+  background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);
+  border-radius:3px;cursor:pointer;display:grid;place-items:center;padding:0}
+.gzb:hover{color:var(--text);border-color:var(--accent-2)}
+.gzb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ghint{position:absolute;left:12px;bottom:10px;font-size:11px;color:var(--faint);
+  background:color-mix(in srgb,var(--g-ground) 78%,transparent);padding:3px 8px;border-radius:3px;pointer-events:none}
+@media(max-width:520px){.ghint{display:none}}
+.glegend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12.5px;color:var(--dim)}
+.lg{display:inline-flex;align-items:center;gap:6px}
+.lgdot{width:10px;height:10px;border-radius:50%;flex:none}
+.lgline{width:18px;height:0;border-top:2px solid;flex:none}
+.lgsep{width:100%;height:0;margin:2px 0}
 
 /* ---------- results ---------- */
 .rescount{font-size:13px;color:var(--dim);margin-bottom:14px}
@@ -823,6 +860,7 @@ function drawRail(){
       <span>${esc(w.name)}</span><span class="at">${esc(w.attr)}</span></button>`;
   });
   h += '<div class="raildiv"></div><div class="railcap">Reference</div>';
+  h += `<button class="wbtn" data-v="graph" aria-current="${view.mode==="graph"}"><span>Skill Graph</span></button>`;
   h += `<button class="wbtn" data-v="atlas" aria-current="${view.mode==="atlas"}"><span>Interaction Atlas</span></button>`;
   h += `<button class="wbtn" data-v="systems" aria-current="${view.mode==="systems"}"><span>Systems &amp; Terms</span></button>`;
   r.innerHTML = h;
@@ -1039,11 +1077,415 @@ function drawDetail(){
   d.innerHTML = h;
 }
 
+
+/* ============ SKILL GRAPH ============ */
+/* Self-contained force-directed layout: repulsion + springs + centring + collision,
+   integrated with velocity decay. No layout library, no network dependency. */
+const FAM = {
+  mace:"strike", flail:"strike",
+  quarterstaff:"martial", unarmed:"martial", spear:"martial",
+  bow:"ranged", crossbow:"ranged",
+  wand:"caster", sceptre:"caster", staff:"caster",
+  talisman:"beast", shield:"guard"
+};
+const FAMNAME = {strike:"Heavy melee", martial:"Agile melee", ranged:"Ranged",
+                 caster:"Caster", beast:"Shapeshift", guard:"Off-hand"};
+const TAGNAME = {phys:"Physical", fire:"Fire", cold:"Cold", light:"Lightning",
+                 chaos:"Chaos", util:"Utility", spirit:"Spirit"};
+let G = null;
+
+function drawGraph(){
+  const lg = Object.keys(FAMNAME).map(f =>
+    `<span class="lg"><span class="lgdot" style="background:var(--g-${f})"></span>${esc(FAMNAME[f])}</span>`).join("");
+  return `<div class="whead">
+    <div class="eyebrow">Cross-tree reference</div>
+    <h2>Skill Graph</h2>
+    <div class="tagline">Every skill, wired to the effects it shares with the others.</div>
+    <p class="prose">Skills are nodes; the <strong>shared effects</strong> they hand between each other are the hubs. An edge running <em>into</em> a hub means that skill applies the effect; an edge running <em>out of</em> a hub means the skill spends it. Weapons never touch each other directly here — they meet only at a hub, which is the whole point: a hub with spokes from four different weapons is a combination your second weapon set exists to build. Everything drawn here is also written out in text on the <strong>Interaction Atlas</strong> page.</p>
+  </div>
+  <div class="gtools">
+    <label class="gchk" for="gOrphan"><input type="checkbox" id="gOrphan" checked> Hide skills with no shared effect</label>
+    <label class="gchk" for="gTags"><input type="checkbox" id="gTags"> Add damage-type hubs</label>
+    <button class="gbtn" id="gReset" type="button">Reset view</button>
+    <span class="gstat mono" id="gStat"></span>
+  </div>
+  <div class="gwrap">
+    <canvas id="gcanvas" role="img" aria-label="Force-directed graph of Path of Exile 2 skills linked through the effects they share"></canvas>
+    <div class="gzoom">
+      <button class="gzb" id="gIn" type="button" aria-label="Zoom in">+</button>
+      <button class="gzb" id="gOut" type="button" aria-label="Zoom out">&minus;</button>
+    </div>
+    <div class="ghint">Drag to pan · scroll to zoom · drag a node to pin it · double-click to release · click to open its entry</div>
+  </div>
+  <div class="glegend">
+    ${lg}
+    <span class="lg"><span class="lgdot" style="background:var(--accent);border-radius:2px"></span>Shared effect (hub)</span>
+    <span class="lgsep"></span>
+    <span class="lg"><span class="lgline" style="border-color:var(--good)"></span>applies the effect</span>
+    <span class="lg"><span class="lgline" style="border-color:var(--fire)"></span>spends the effect</span>
+    <span class="lg"><span class="lgline" style="border-color:var(--util);border-top-style:dotted"></span>carries the damage type</span>
+  </div>`;
+}
+
+function gColors(){
+  const cs = getComputedStyle(document.documentElement);
+  const v = n => cs.getPropertyValue(n).trim();
+  return {
+    ground:v("--g-ground"), link:v("--g-link"), text:v("--text"), dim:v("--dim"),
+    accent:v("--accent"), out:v("--good"), into:v("--fire"), tag:v("--util"),
+    fam:{strike:v("--g-strike"),martial:v("--g-martial"),ranged:v("--g-ranged"),
+         caster:v("--g-caster"),beast:v("--g-beast"),guard:v("--g-guard")},
+    hue:{phys:v("--phys"),fire:v("--fire"),cold:v("--cold"),light:v("--light"),
+         chaos:v("--chaos"),util:v("--util"),spirit:v("--spirit")}
+  };
+}
+
+function initGraph(){
+  const cv = document.getElementById("gcanvas");
+  if(!cv) return;
+  const ctx = cv.getContext("2d");
+  let C = gColors(), W = 1, H = 1;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let tf = {x:0, y:0, k:1};
+  let N = [], L = [], adj = new Map();
+  let alpha = 1, alphaTarget = 0, raf = 0;
+  let hover = null, dragNode = null, panning = false, moved = false;
+  let p0 = [0,0], t0 = [0,0], pointers = new Map(), pinch0 = 0, pinchK = 1;
+
+  const rad = n => n.k === "s" ? 3.4 + Math.sqrt(n.deg) * 1.45 : 7 + Math.sqrt(n.deg) * 1.85;
+  const col = n => n.k === "s" ? C.fam[n.fam] : (C.hue[n.hue] || C.accent);
+  const clamp = (v,a,b) => v < a ? a : v > b ? b : v;
+
+  function build(){
+    const wantTags = document.getElementById("gTags").checked;
+    const hideOrphans = document.getElementById("gOrphan").checked;
+    const map = new Map();
+    ALL.forEach(s => map.set(s.w + "/" + s.n,
+      {id:s.w+"/"+s.n, k:"s", label:s.n, fam:FAM[s.w] || "guard", deg:0, sk:s, q:1}));
+    CHAINS.forEach(ch => map.set("#"+ch.id,
+      {id:"#"+ch.id, k:"h", label:ch.name, hue:ch.hue, deg:0, ch:ch, q:3.4}));
+    const raw = [];
+    CHAINS.forEach(ch => {
+      ch.p.forEach(([w,n]) => { const k = w+"/"+n; if(map.has(k)) raw.push({s:k, t:"#"+ch.id, d:0}); });
+      ch.c.forEach(([w,n]) => { const k = w+"/"+n; if(map.has(k)) raw.push({s:"#"+ch.id, t:k, d:1}); });
+    });
+    if(wantTags){
+      Object.keys(TAGNAME).forEach(t => map.set("@"+t,
+        {id:"@"+t, k:"t", label:TAGNAME[t], hue:t, deg:0, tag:t, q:3.8}));
+      ALL.forEach(s => (s.tags||[]).forEach(t => {
+        if(map.has("@"+t)) raw.push({s:s.w+"/"+s.n, t:"@"+t, d:2});
+      }));
+    }
+    raw.forEach(l => { map.get(l.s).deg++; map.get(l.t).deg++; });
+    let nodes = [...map.values()];
+    if(hideOrphans){
+      const keep = new Set();
+      raw.forEach(l => { keep.add(l.s); keep.add(l.t); });
+      nodes = nodes.filter(n => keep.has(n.id));
+    }
+    const ok = new Set(nodes.map(n => n.id));
+    const byId = new Map(nodes.map(n => [n.id, n]));
+    const links = raw.filter(l => ok.has(l.s) && ok.has(l.t))
+      .map(l => ({a:byId.get(l.s), b:byId.get(l.t), d:l.d,
+                  rest: l.d === 2 ? 104 : 66, k: l.d === 2 ? 0.13 : 0.5}));
+    adj = new Map(nodes.map(n => [n.id, new Set()]));
+    links.forEach(l => { adj.get(l.a.id).add(l.b.id); adj.get(l.b.id).add(l.a.id); });
+    // seed: hubs near the middle, skills on a ring — keeps the first frame legible
+    nodes.forEach((n, i) => {
+      const ang = i * 2.399963;
+      const r = n.k === "s" ? 120 + Math.sqrt(i) * 26 : 40 + (i % 5) * 14;
+      n.x = Math.cos(ang) * r; n.y = Math.sin(ang) * r * 0.78;
+      n.vx = 0; n.vy = 0; n.fx = null; n.fy = null;
+    });
+    document.getElementById("gStat").textContent =
+      nodes.length + " nodes · " + links.length + " links";
+    return {nodes, links};
+  }
+
+  const REP = 2700, VD = 0.70, CX = 0.030, CY = 0.048;
+
+  function tick(){
+    alpha += (alphaTarget - alpha) * 0.023;
+    const n = N.length;
+    for(let i = 0; i < n; i++){
+      const a = N[i];
+      for(let j = i + 1; j < n; j++){
+        const b = N[j];
+        let dx = b.x - a.x, dy = b.y - a.y, d2 = dx*dx + dy*dy;
+        if(d2 > 270000) continue;
+        if(d2 < 0.01){ dx = (Math.random()-0.5); dy = (Math.random()-0.5); d2 = dx*dx + dy*dy + 0.01; }
+        const d = Math.sqrt(d2);
+        const f = REP * a.q * b.q / d2 * alpha;
+        const fx = dx / d * f, fy = dy / d * f;
+        a.vx -= fx; a.vy -= fy; b.vx += fx; b.vy += fy;
+      }
+    }
+    for(const l of L){
+      const a = l.a, b = l.b;
+      let dx = b.x - a.x, dy = b.y - a.y;
+      let d = Math.sqrt(dx*dx + dy*dy) || 0.01;
+      const f = (d - l.rest) / d * l.k * alpha;
+      const fx = dx * f, fy = dy * f;
+      const wa = b.q / (a.q + b.q), wb = a.q / (a.q + b.q);
+      a.vx += fx * wa; a.vy += fy * wa;
+      b.vx -= fx * wb; b.vy -= fy * wb;
+    }
+    for(const a of N){
+      a.vx -= a.x * CX * alpha;
+      a.vy -= a.y * CY * alpha;
+      if(a.fx != null){ a.x = a.fx; a.y = a.fy; a.vx = 0; a.vy = 0; continue; }
+      a.vx = clamp(a.vx * VD, -40, 40);
+      a.vy = clamp(a.vy * VD, -40, 40);
+      a.x += a.vx; a.y += a.vy;
+    }
+    for(let pass = 0; pass < 2; pass++){
+      for(let i = 0; i < n; i++){
+        const a = N[i];
+        for(let j = i + 1; j < n; j++){
+          const b = N[j];
+          const rr = rad(a) + rad(b) + 6;
+          let dx = b.x - a.x, dy = b.y - a.y;
+          const d2 = dx*dx + dy*dy;
+          if(d2 >= rr*rr || d2 === 0) continue;
+          const d = Math.sqrt(d2), push = (rr - d) / d * 0.5;
+          const fx = dx * push, fy = dy * push;
+          if(a.fx == null){ a.x -= fx; a.y -= fy; }
+          if(b.fx == null){ b.x += fx; b.y += fy; }
+        }
+      }
+    }
+  }
+
+  function pick(x, y){
+    let best = null, bd = Infinity;
+    for(const n of N){
+      const dx = n.x - x, dy = n.y - y, d2 = dx*dx + dy*dy;
+      const r = rad(n) + 7;
+      if(d2 < r*r && d2 < bd){ bd = d2; best = n; }
+    }
+    return best;
+  }
+  const toGraph = (px, py) => [(px - W/2 - tf.x) / tf.k, (py - H/2 - tf.y) / tf.k];
+
+  function activeId(){
+    if(hover) return hover.id;
+    if(sel.c) return "#" + sel.c;
+    if(sel.w && sel.n) return sel.w + "/" + sel.n;
+    return null;
+  }
+
+  function resize(){
+    const r = cv.getBoundingClientRect();
+    W = Math.max(1, r.width); H = Math.max(1, r.height);
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  }
+
+  function paint(){
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.fillStyle = C.ground; ctx.fillRect(0, 0, W, H);
+    ctx.save();
+    ctx.translate(W/2 + tf.x, H/2 + tf.y); ctx.scale(tf.k, tf.k);
+
+    const act = activeId();
+    const near = act && adj.has(act) ? adj.get(act) : null;
+    const lit = id => !act || id === act || (near && near.has(id));
+    // a hover is an active query and dims hard; a lingering selection only tints
+    const soft = act && !hover;
+    const dimN = soft ? 0.44 : 0.15, dimL = soft ? 0.15 : 0.06, dimT = soft ? 0.5 : 0.28;
+
+    ctx.lineCap = "round";
+    for(const l of L){
+      const on = act && (l.a.id === act || l.b.id === act);
+      if(act && !on){ ctx.globalAlpha = dimL; ctx.strokeStyle = C.link; ctx.lineWidth = 0.8; ctx.setLineDash([]); }
+      else {
+        ctx.strokeStyle = l.d === 2 ? C.tag : (l.d === 0 ? C.out : C.into);
+        ctx.globalAlpha = on ? 0.95 : (l.d === 2 ? 0.12 : 0.3);
+        ctx.lineWidth = on ? 1.9 : (l.d === 2 ? 0.7 : 1);
+        ctx.setLineDash(l.d === 2 ? [2, 3] : []);
+      }
+      ctx.beginPath(); ctx.moveTo(l.a.x, l.a.y); ctx.lineTo(l.b.x, l.b.y); ctx.stroke();
+      if(on && l.d !== 2){
+        const dx = l.b.x - l.a.x, dy = l.b.y - l.a.y, d = Math.hypot(dx, dy) || 1;
+        const ux = dx/d, uy = dy/d, hx = l.b.x - ux * (rad(l.b) + 3), hy = l.b.y - uy * (rad(l.b) + 3);
+        ctx.setLineDash([]); ctx.beginPath();
+        ctx.moveTo(hx, hy);
+        ctx.lineTo(hx - ux*7 + uy*3.6, hy - uy*7 - ux*3.6);
+        ctx.lineTo(hx - ux*7 - uy*3.6, hy - uy*7 + ux*3.6);
+        ctx.closePath(); ctx.fillStyle = ctx.strokeStyle; ctx.fill();
+      }
+    }
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+
+    for(const n of N){
+      const r = rad(n), on = lit(n.id);
+      ctx.globalAlpha = on ? 1 : dimN;
+      ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 6.2832);
+      ctx.fillStyle = col(n); ctx.fill();
+      if(n.k !== "s"){
+        ctx.lineWidth = 1.7; ctx.strokeStyle = C.ground; ctx.stroke();
+        ctx.beginPath(); ctx.arc(n.x, n.y, r + 2.8, 0, 6.2832);
+        ctx.lineWidth = 1; ctx.strokeStyle = col(n);
+        ctx.globalAlpha = on ? 0.5 : dimN * 0.5; ctx.stroke();
+      }
+      if(n.fx != null && on){
+        ctx.globalAlpha = 0.85; ctx.beginPath(); ctx.arc(n.x, n.y, r + 5, 0, 6.2832);
+        ctx.lineWidth = 1; ctx.strokeStyle = C.text;
+        ctx.setLineDash([1.5, 2.5]); ctx.stroke(); ctx.setLineDash([]);
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    const showAll = tf.k > 1.2;
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for(const n of N){
+      const isHub = n.k !== "s", on = lit(n.id);
+      const show = isHub ? (tf.k > 0.42 || on) : (showAll || (act && on));
+      if(!show) continue;
+      const fs = isHub ? 12 : 10.5;
+      ctx.font = (isHub ? "600 " : "400 ") + fs + 'px Archivo, system-ui, sans-serif';
+      const y = n.y + rad(n) + 4, w = ctx.measureText(n.label).width;
+      ctx.globalAlpha = on ? 0.9 : dimT * 0.8;
+      ctx.fillStyle = C.ground; ctx.fillRect(n.x - w/2 - 3, y - 1, w + 6, fs + 3);
+      ctx.globalAlpha = on ? 1 : dimT;
+      ctx.fillStyle = isHub ? C.text : C.dim;
+      ctx.fillText(n.label, n.x, y);
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+
+  function loop(){ tick(); paint(); raf = requestAnimationFrame(loop); }
+
+  function fit(){
+    if(!N.length) return;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for(const n of N){
+      x0 = Math.min(x0, n.x); x1 = Math.max(x1, n.x);
+      y0 = Math.min(y0, n.y); y1 = Math.max(y1, n.y);
+    }
+    const pad = 54, gw = (x1 - x0) || 1, gh = (y1 - y0) || 1;
+    tf.k = clamp(Math.min((W - pad*2) / gw, (H - pad*2) / gh), 0.3, 1.5);
+    tf.x = -(x0 + x1) / 2 * tf.k;
+    tf.y = -(y0 + y1) / 2 * tf.k;
+  }
+
+  function start(){
+    const g = build(); N = g.nodes; L = g.links;
+    alpha = 1; alphaTarget = 0;
+    for(let i = 0; i < 130; i++) tick();   // settle before the first frame is seen
+    fit();
+  }
+
+  function zoomAt(px, py, factor){
+    const [gx, gy] = toGraph(px, py);
+    tf.k = clamp(tf.k * factor, 0.3, 4.5);
+    tf.x = px - W/2 - gx * tf.k;
+    tf.y = py - H/2 - gy * tf.k;
+  }
+
+  cv.addEventListener("wheel", e => {
+    e.preventDefault();
+    const r = cv.getBoundingClientRect();
+    zoomAt(e.clientX - r.left, e.clientY - r.top, Math.pow(2, -e.deltaY * 0.0022));
+  }, {passive:false});
+
+  cv.addEventListener("pointerdown", e => {
+    cv.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, [e.clientX, e.clientY]);
+    if(pointers.size === 2){
+      const [A, B] = [...pointers.values()];
+      pinch0 = Math.hypot(A[0]-B[0], A[1]-B[1]) || 1; pinchK = tf.k;
+      panning = false; dragNode = null; return;
+    }
+    const r = cv.getBoundingClientRect();
+    const [x, y] = toGraph(e.clientX - r.left, e.clientY - r.top);
+    moved = false;
+    const n = pick(x, y);
+    if(n){ dragNode = n; n.fx = n.x; n.fy = n.y; alphaTarget = 0.24; alpha = Math.max(alpha, 0.3); }
+    else { panning = true; p0 = [e.clientX, e.clientY]; t0 = [tf.x, tf.y]; cv.classList.add("grabbing"); }
+  });
+
+  cv.addEventListener("pointermove", e => {
+    if(pointers.has(e.pointerId)) pointers.set(e.pointerId, [e.clientX, e.clientY]);
+    const r = cv.getBoundingClientRect();
+    if(pointers.size === 2){
+      const [A, B] = [...pointers.values()];
+      const d = Math.hypot(A[0]-B[0], A[1]-B[1]) || 1;
+      const mx = (A[0]+B[0])/2 - r.left, my = (A[1]+B[1])/2 - r.top;
+      const want = clamp(pinchK * (d / pinch0), 0.3, 4.5);
+      zoomAt(mx, my, want / tf.k);
+      return;
+    }
+    if(dragNode){
+      moved = true;
+      const [x, y] = toGraph(e.clientX - r.left, e.clientY - r.top);
+      dragNode.fx = x; dragNode.fy = y;
+      return;
+    }
+    if(panning){
+      moved = true;
+      tf.x = t0[0] + (e.clientX - p0[0]);
+      tf.y = t0[1] + (e.clientY - p0[1]);
+      return;
+    }
+    const [x, y] = toGraph(e.clientX - r.left, e.clientY - r.top);
+    hover = pick(x, y);
+    cv.classList.toggle("onnode", !!hover);
+  });
+
+  function endPointer(e){
+    pointers.delete(e.pointerId);
+    if(pointers.size < 2) pinch0 = 0;
+    dragNode = null; panning = false; alphaTarget = 0;
+    cv.classList.remove("grabbing");
+  }
+  cv.addEventListener("pointerup", endPointer);
+  cv.addEventListener("pointercancel", endPointer);
+  cv.addEventListener("pointerleave", () => { if(!dragNode && !panning) hover = null; });
+
+  cv.addEventListener("click", e => {
+    if(moved){ moved = false; return; }
+    const r = cv.getBoundingClientRect();
+    const n = pick(...toGraph(e.clientX - r.left, e.clientY - r.top));
+    if(!n) return;
+    if(n.k === "s") sel = {w:n.sk.w, n:n.sk.n};
+    else if(n.k === "h") sel = {c:n.ch.id};
+    else return;
+    drawDetail();
+    document.getElementById("detail").scrollIntoView({block:"nearest", behavior:"smooth"});
+  });
+
+  cv.addEventListener("dblclick", e => {
+    const r = cv.getBoundingClientRect();
+    const n = pick(...toGraph(e.clientX - r.left, e.clientY - r.top));
+    if(n){ n.fx = null; n.fy = null; alpha = Math.max(alpha, 0.4); }
+  });
+
+  document.getElementById("gTags").addEventListener("change", start);
+  document.getElementById("gOrphan").addEventListener("change", start);
+  document.getElementById("gReset").addEventListener("click", start);
+  document.getElementById("gIn").addEventListener("click", () => zoomAt(W/2, H/2, 1.35));
+  document.getElementById("gOut").addEventListener("click", () => zoomAt(W/2, H/2, 1/1.35));
+
+  const ro = new ResizeObserver(resize); ro.observe(cv);
+  const themed = () => { C = gColors(); };
+  const mq = window.matchMedia("(prefers-color-scheme: dark)");
+  mq.addEventListener("change", themed);
+  const mo = new MutationObserver(themed);
+  mo.observe(document.documentElement, {attributes:true, attributeFilter:["data-theme"]});
+
+  resize(); start(); loop();
+  G = { stop(){ cancelAnimationFrame(raf); ro.disconnect(); mo.disconnect();
+    mq.removeEventListener("change", themed); } };
+}
+
 /* ============ DRAW ============ */
 function draw(){
   drawRail();
   const m = document.getElementById("main");
+  if(G){ G.stop(); G=null; }
   if(query.trim().length>=2) m.innerHTML = drawSearch(query.trim());
+  else if(view.mode==="graph"){ m.innerHTML = drawGraph(); initGraph(); }
   else if(view.mode==="atlas") m.innerHTML = drawAtlas();
   else if(view.mode==="systems") m.innerHTML = drawSystems();
   else m.innerHTML = drawWeapon(byId[view.wid]);
