@@ -1,0 +1,972 @@
+<title>Twelve Kits of Vilderan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=Barlow:wght@400;500;600;700&family=Fira+Mono:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#e9e5dd; --surface:#f7f4ef; --surface-2:#ded9cf; --raised:#fffdf9;
+  --line:#c9c2b5; --line-soft:#ddd7ca;
+  --text:#20190f; --dim:#5f5748; --faint:#8d8475;
+  --accent:#a6431a; --accent-2:#c2793a; --accent-wash:#f2e4d6;
+  --phys:#7a705f; --fire:#b8491f; --cold:#2b7699; --light:#97720c;
+  --chaos:#4e7c33; --util:#6a558f;
+  --good:#2f7346; --warn:#96650f;
+  --c-bers:#a8322e; --c-ember:#4a4a9e; --c-engi:#8a6a1e; --c-out:#3d7a44;
+  --spine:#c2a06e;
+  --shadow:0 1px 2px rgba(40,30,16,.07),0 10px 26px -14px rgba(40,30,16,.25);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#15110d; --surface:#1d1813; --surface-2:#261f18; --raised:#221c16;
+    --line:#383026; --line-soft:#2c251d;
+    --text:#efe7da; --dim:#a89c8a; --faint:#7a6f61;
+    --accent:#e08a4a; --accent-2:#b0703a; --accent-wash:#2b1f14;
+    --phys:#a89c8a; --fire:#ea7b45; --cold:#5aa8cc; --light:#d9ae37;
+    --chaos:#82b45e; --util:#a58fd0;
+    --good:#5cbd82; --warn:#d6a53f;
+    --c-bers:#e06a63; --c-ember:#8f8fe0; --c-engi:#d4a63c; --c-out:#6fb877;
+    --spine:#6b5434;
+    --shadow:0 1px 2px rgba(0,0,0,.45),0 12px 30px -16px rgba(0,0,0,.75);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15110d; --surface:#1d1813; --surface-2:#261f18; --raised:#221c16;
+  --line:#383026; --line-soft:#2c251d;
+  --text:#efe7da; --dim:#a89c8a; --faint:#7a6f61;
+  --accent:#e08a4a; --accent-2:#b0703a; --accent-wash:#2b1f14;
+  --phys:#a89c8a; --fire:#ea7b45; --cold:#5aa8cc; --light:#d9ae37;
+  --chaos:#82b45e; --util:#a58fd0;
+  --good:#5cbd82; --warn:#d6a53f;
+  --c-bers:#e06a63; --c-ember:#8f8fe0; --c-engi:#d4a63c; --c-out:#6fb877;
+  --spine:#6b5434;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 12px 30px -16px rgba(0,0,0,.75);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);margin:0;font-size:15px;line-height:1.55;
+  font-family:Barlow,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:Alegreya,Georgia,serif;margin:0;text-wrap:balance}
+.mono{font-family:"Fira Mono",ui-monospace,Menlo,monospace}
+
+header.top{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--surface) 93%,transparent);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topin{max-width:1500px;margin:0 auto;padding:13px 18px;display:flex;gap:16px;align-items:baseline;flex-wrap:wrap}
+.brand{margin-right:auto;display:flex;flex-direction:column;gap:1px}
+.brand h1{font-size:24px;font-weight:800;letter-spacing:-.01em;line-height:1.1}
+.brand .sub{font-size:11.5px;color:var(--dim);letter-spacing:.07em;text-transform:uppercase;font-weight:600}
+.ver{font-family:"Fira Mono",monospace;font-size:10.5px;border:1px solid var(--line);border-radius:3px;
+  padding:3px 8px;color:var(--dim);background:var(--surface-2);white-space:nowrap}
+.search{flex:1 1 220px;max-width:320px;display:flex;align-items:center;gap:8px;
+  border:1px solid var(--line);background:var(--raised);border-radius:4px;padding:6px 10px}
+.search input{border:0;background:none;color:var(--text);font:inherit;font-size:14px;width:100%;outline:none}
+.search input::placeholder{color:var(--faint)}
+
+.wrap{max-width:1500px;margin:0 auto;padding-inline:18px;padding-block:0}
+.notice{border-left:3px solid var(--accent-2);background:var(--accent-wash);padding:12px 16px;margin:18px 0 0;
+  border-radius:0 4px 4px 0;font-size:13.5px}
+.notice b{font-weight:700}
+
+.cols{display:grid;grid-template-columns:210px minmax(0,1fr) 330px;gap:24px;align-items:start;padding-block:20px 56px}
+@media(max-width:1180px){.cols{grid-template-columns:190px minmax(0,1fr)}}
+@media(max-width:820px){.cols{grid-template-columns:minmax(0,1fr);gap:18px}}
+
+nav.rail{position:sticky;top:84px;display:flex;flex-direction:column;gap:1px}
+@media(max-width:820px){nav.rail{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px}}
+.railcap{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:700;
+  padding:10px 0 5px 10px;display:flex;align-items:center;gap:7px}
+.railcap .cdot{width:7px;height:7px;border-radius:50%;flex:none}
+@media(max-width:820px){.railcap{display:none}}
+.wbtn{display:flex;align-items:baseline;gap:8px;width:100%;text-align:left;border:0;border-left:2px solid transparent;
+  background:none;color:var(--dim);font:inherit;font-size:13.5px;font-weight:500;padding:6px 10px;cursor:pointer;
+  border-radius:0 4px 4px 0}
+.wbtn:hover{background:var(--surface-2);color:var(--text)}
+.wbtn .at{font-family:"Fira Mono",monospace;font-size:9.5px;color:var(--faint);margin-left:auto}
+.wbtn[aria-current="true"]{background:var(--surface);color:var(--text);border-left-color:var(--accent);font-weight:700}
+.wbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+@media(max-width:820px){.wbtn{width:auto;white-space:nowrap;border-left:0;border-bottom:2px solid transparent;border-radius:4px 4px 0 0}
+  .wbtn[aria-current="true"]{border-left:0;border-bottom-color:var(--accent)}.wbtn .at{display:none}}
+.raildiv{height:1px;background:var(--line);margin:9px 10px}
+@media(max-width:820px){.raildiv{width:1px;height:auto;margin:4px 2px}}
+
+main{min-width:0}
+.whead{border-bottom:1px solid var(--line);padding-bottom:16px}
+.eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.whead h2{font-size:36px;font-weight:800;letter-spacing:-.02em;margin:3px 0 2px}
+@media(max-width:520px){.whead h2{font-size:28px}}
+.tagline{color:var(--dim);font-size:16px;font-family:Alegreya,serif;font-style:italic}
+.meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.mchip{font-family:"Fira Mono",monospace;font-size:10.5px;border:1px solid var(--line);background:var(--surface);
+  padding:4px 9px;border-radius:3px;color:var(--dim)}
+.mchip b{color:var(--text)}
+.prose{max-width:68ch;color:var(--dim);font-size:14.5px;margin:14px 0 0}
+.prose strong{color:var(--text);font-weight:600}
+
+.cores{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 4px}
+.core{flex:1 1 250px;background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;padding:13px 15px;min-width:0}
+.core h4{font-size:13.5px;font-weight:700;margin-bottom:3px;font-family:Barlow,sans-serif}
+.core p{margin:0;font-size:12.5px;color:var(--dim);line-height:1.5}
+
+.ladder{margin-top:26px}
+.ladder h3,.secth{font-family:Alegreya,serif;font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:13px}
+.tier{display:grid;grid-template-columns:92px minmax(0,1fr);gap:16px;position:relative}
+.tier:last-child .gut::after{display:none}
+.gut{position:relative;padding-top:2px;display:flex;flex-direction:column;align-items:center}
+.gut::after{content:"";position:absolute;left:50%;top:58px;bottom:-8px;width:1px;
+  background:linear-gradient(var(--spine),var(--line-soft))}
+.gemno{width:48px;height:48px;border-radius:50%;border:1px solid var(--spine);background:var(--surface);
+  display:grid;place-items:center;font-family:"Fira Mono",monospace;font-weight:700;font-size:15px;color:var(--accent)}
+.gemlbl{font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);text-align:center;
+  width:100%;margin-top:5px;line-height:1.35;font-weight:700}
+.tbody{padding-bottom:24px;min-width:0}
+.tname{font-family:Alegreya,serif;font-size:17px;font-weight:700;margin:6px 0 2px}
+.tnote{font-size:12.5px;color:var(--faint);margin:0 0 11px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(236px,1fr));gap:10px}
+
+.skill{text-align:left;font:inherit;cursor:pointer;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:4px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;min-width:0;
+  transition:border-color .12s,transform .12s}
+.skill:hover{border-color:var(--accent-2);transform:translateY(-1px)}
+.skill:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.skill[aria-pressed="true"]{border-color:var(--accent);background:var(--raised);box-shadow:var(--shadow)}
+.sname{font-family:Alegreya,serif;font-size:15.5px;font-weight:700;line-height:1.25;display:flex;align-items:baseline;
+  gap:6px;flex-wrap:wrap}
+.srole{font-size:12.5px;color:var(--dim);line-height:1.45}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tg{font-family:"Fira Mono",monospace;font-size:9px;letter-spacing:.03em;text-transform:uppercase;padding:2px 5px;
+  border-radius:2px;border:1px solid;font-weight:700}
+.tg.phys{color:var(--phys);border-color:var(--phys)}
+.tg.fire{color:var(--fire);border-color:var(--fire)}
+.tg.cold{color:var(--cold);border-color:var(--cold)}
+.tg.light{color:var(--light);border-color:var(--light)}
+.tg.chaos{color:var(--chaos);border-color:var(--chaos)}
+.tg.util{color:var(--util);border-color:var(--util)}
+.orig{font-family:"Fira Mono",monospace;font-size:8.5px;color:var(--good);border:1px solid var(--good);
+  padding:1px 4px;border-radius:2px;font-weight:700}
+.new{font-family:"Fira Mono",monospace;font-size:8.5px;color:var(--warn);border:1px solid var(--warn);
+  padding:1px 4px;border-radius:2px;font-weight:700}
+
+aside.detail{position:sticky;top:84px;max-height:calc(100vh - 104px);overflow-y:auto;background:var(--surface);
+  border:1px solid var(--line);border-radius:4px;padding:17px;box-shadow:var(--shadow)}
+@media(max-width:1180px){aside.detail{position:static;max-height:none;grid-column:1/-1}}
+@media(max-width:820px){aside.detail{grid-column:auto}}
+.dhead{border-bottom:1px solid var(--line-soft);padding-bottom:11px;margin-bottom:11px}
+.dhead .from{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.dhead h3{font-size:20px;font-weight:700;margin:3px 0 7px}
+.dsec{margin-top:14px}
+.dsec h5{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:0 0 5px}
+.dsec p{margin:0;font-size:13.5px;color:var(--dim);line-height:1.55}
+.dsec p em{color:var(--text);font-style:normal;font-weight:600}
+.chainlist{display:flex;flex-direction:column;gap:7px}
+.crow{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.45}
+.crole{font-family:"Fira Mono",monospace;font-size:8.5px;font-weight:700;padding:2px 5px;border-radius:2px;
+  flex:none;margin-top:2px}
+.crole.out{color:var(--good);border:1px solid var(--good)}
+.crole.in{color:var(--fire);border:1px solid var(--fire)}
+.crow b{font-weight:700;color:var(--text)}
+.crow span{color:var(--dim)}
+.xlink{background:none;border:0;border-bottom:1px dotted var(--accent-2);color:var(--accent);font:inherit;
+  font-size:inherit;cursor:pointer;padding:0;text-align:left}
+.xlink:hover{border-bottom-style:solid}
+.xlink:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.xwrap{display:flex;flex-wrap:wrap;gap:4px 2px;font-size:12.5px;color:var(--dim)}
+
+.chain{background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;margin-bottom:13px;overflow:hidden}
+.chain > header{padding:13px 15px 11px;border-bottom:1px solid var(--line-soft);background:var(--surface-2)}
+.chain h3{font-size:18px;font-weight:700;text-transform:none;color:var(--text);letter-spacing:-.01em}
+.chain header p{margin:5px 0 0;font-size:12.5px;color:var(--dim);max-width:72ch;line-height:1.5}
+.flow{display:grid;grid-template-columns:1fr auto 1fr}
+@media(max-width:700px){.flow{grid-template-columns:1fr}}
+.side{padding:12px 15px;min-width:0}
+.side + .arrow + .side{border-left:1px solid var(--line-soft)}
+@media(max-width:700px){.side + .arrow + .side{border-left:0;border-top:1px solid var(--line-soft)}}
+.side h5{font-size:9px;letter-spacing:.13em;text-transform:uppercase;font-weight:700;margin:0 0 7px}
+.side.p h5{color:var(--good)} .side.c h5{color:var(--fire)}
+.arrow{display:grid;place-items:center;padding:0 4px;color:var(--faint);font-family:"Fira Mono",monospace}
+@media(max-width:700px){.arrow{display:none}}
+.reflist{display:flex;flex-direction:column;gap:5px}
+.ref{font-size:12.5px;line-height:1.4;display:flex;gap:7px;align-items:baseline}
+.refw{font-family:"Fira Mono",monospace;font-size:8.5px;color:var(--faint);text-transform:uppercase;flex:none;
+  width:58px;text-align:right;font-weight:700}
+.chain .foot{padding:10px 15px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--dim);line-height:1.5}
+.chain .foot b{color:var(--text);font-weight:700}
+
+.sblock{background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;padding:18px 20px;margin-bottom:13px}
+.sblock h3{font-size:20px;font-weight:700;margin-bottom:7px;text-transform:none;color:var(--text);letter-spacing:-.01em}
+.sblock p{margin:0 0 10px;font-size:14px;color:var(--dim);max-width:72ch;line-height:1.6}
+.sblock p:last-child{margin-bottom:0}
+.sblock strong{color:var(--text);font-weight:600}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:9px}
+.tbl th,.tbl td{text-align:left;padding:7px 12px 7px 0;border-bottom:1px solid var(--line-soft);vertical-align:top}
+.tbl th{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:700}
+.tbl td:first-child{font-weight:600;color:var(--text);white-space:nowrap;padding-right:16px}
+.tbl td{color:var(--dim)}
+.scroll{overflow-x:auto}
+.empty{color:var(--dim);font-size:14px;padding:28px 0}
+footer.end{border-top:1px solid var(--line);padding:20px 18px 38px;max-width:1500px;margin:0 auto;
+  font-size:12.5px;color:var(--faint);line-height:1.6}
+footer.end b{color:var(--dim)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="topin">
+    <div class="brand">
+      <h1>Twelve Kits of Vilderan</h1>
+      <div class="sub">Torchlight II skill trees rebuilt as Path of Exile 2 weapon kits</div>
+    </div>
+    <span class="ver mono">CONVERSION · 12 TREES · 84 SKILLS</span>
+    <label class="search" for="q">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      <input id="q" type="search" placeholder="Search skills, trees, states…" autocomplete="off">
+    </label>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="notice">
+    <b>The conversion in one line.</b> Torchlight&nbsp;II gates each tree's skills at character levels <b>1 / 7 / 14 / 21 / 28 / 35 / 42</b> — seven rungs. Path of Exile&nbsp;2 gates weapon skills at Uncut Gem tiers <b>1 / 3 / 5 / 7 / 9 / 11 / 13</b> — also seven. That let every tree map rung-for-rung onto a weapon ladder with nothing invented to make it fit. Each of the twelve trees then gets what a PoE&nbsp;2 weapon kit has: a free opener, a mobility skill, a <b>private state</b> nothing else touches, at least one closed loop, and a deliberate hole its sibling trees fill.
+  </div>
+  <div class="cols">
+    <nav class="rail" id="rail" aria-label="Skill trees"></nav>
+    <main id="main"></main>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</div>
+
+<footer class="end">
+  <p><b>What is original and what is mine.</b> Skill <em>names</em> marked <span class="orig">TL2</span> are real Torchlight II skills, most with their original unlock level; those marked <span class="new">NEW</span> are designs I wrote to fill a ladder rung where I could not verify a TL2 skill for that slot. <b>Every mechanical description on this page is new.</b> Nothing here describes how a skill actually behaves in Torchlight II — that is the entire point of a conversion, but it means this is not a TL2 reference and should not be used as one. For the real game, see the Torchlight Wiki.</p>
+  <p>Torchlight II is Runic Games' work and Path of Exile 2 is Grinding Gear Games'. This is unaffiliated fan design built on the interaction model from the Wraeclast Weapon Codex.</p>
+</footer>
+
+<script>
+"use strict";
+
+const CLASSES = {
+  bers:{name:"Berserker", charge:"Frenzy", color:"var(--c-bers)",
+    note:"Hits fill the Charge bar; at full it breaks into Frenzy — a window of guaranteed critical strikes. All three trees fill it, and each spends it on something different."},
+  ember:{name:"Embermage", charge:"Ember Mastery", color:"var(--c-ember)",
+    note:"Casting fills the Charge bar; at full, Ember Mastery makes spells cost nothing for a time. The trees differ in how fast they fill it and what they do with free casts."},
+  engi:{name:"Engineer", charge:"Overcharge", color:"var(--c-engi)",
+    note:"The Charge bar banks into discrete charges rather than a window. Heavy skills spend them, so the Engineer chooses between many small hits and one enormous one."},
+  out:{name:"Outlander", charge:"Focus", color:"var(--c-out)",
+    note:"Charge accumulates as Focus and is spent on precision — range, pierce and critical damage. The Outlander is the only class whose charge is a targeting resource rather than a damage one."}
+};
+
+/* ---- 12 trees × 7 rungs ---- */
+const W = [
+{
+  id:"hunter", cls:"bers", name:"Hunter", sub:"Berserker · Tree I", attr:"Shred", tagline:"Open the wound, then reach into it.",
+  priv:"Rend",
+  identity:"Hunter is the bleed-and-collect tree. Almost everything in it applies <strong>Rend</strong>, a stacking wound that does very little on its own and becomes the tree's entire damage output the moment Executioner cashes it in. It is the most self-contained Berserker tree — it makes its own resource and spends it — which makes it the natural first pick and the least interesting third one.",
+  cores:[
+    {h:"Private state — Rend",b:"A stacking wound applied by nearly every Hunter skill. Inert until consumed; the tree lives or dies on how many stacks it can land before the payoff."},
+    {h:"Closed loop",b:"Eviscerate and Wolfstrike make Rend, Executioner spends it. Playable from level one with nothing else allocated."},
+    {h:"Exports Broken Armour",b:"Ravage strips armour but Hunter has almost nothing that scales off it. Shadow's wolves and Tundra's shatter do."},
+    {h:"Feeds Frenzy fastest",b:"The highest hit-rate tree in the class, so it fills the Charge bar quickest — which is why the other two trees want it running underneath them."}
+  ],
+  t:[
+   {t:1,lv:1,name:"The wound",note:"",s:[
+     {n:"Eviscerate",o:1,tags:["phys"],r:"Free opener. A 120° cleave that applies one stack of Rend to everything it touches, and leeches on a critical hit."}
+   ]},
+   {t:3,lv:7,name:"Softening",note:"",s:[
+     {n:"Howl",o:1,tags:["util"],r:"Slows and makes foes Vulnerable. Vulnerable enemies take two stacks of Rend per hit instead of one."}
+   ]},
+   {t:5,lv:14,name:"Single target",note:"",s:[
+     {n:"Raze",o:1,tags:["phys"],r:"An uppercut on one target that grows with each consecutive Raze on the same enemy. Breaking the chain resets it."}
+   ]},
+   {t:7,lv:21,name:"Mobility",note:"",s:[
+     {n:"Wolfstrike",o:1,tags:["phys"],r:"A six-metre dash that Rends everything in the line. The tree's only repositioning tool and its best application rate."}
+   ]},
+   {t:9,lv:28,name:"Clear speed",note:"",s:[
+     {n:"Rampage",o:1,tags:["util"],r:"Kills grant stacking attack speed that decays if you stop killing. Converts a cleared pack into a faster next pack."}
+   ]},
+   {t:11,lv:35,name:"The payoff",note:"",s:[
+     {n:"Executioner",o:1,tags:["phys"],r:"Consumes every stack of Rend on one enemy for a hit scaled by the stack count. The reason the rest of the tree exists."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Ravage",o:1,tags:["phys"],r:"Three sweeping strikes within four metres. Each strike Breaks Armour, and the third applies Rend equal to what it stripped."}
+   ]}
+  ]
+},
+{
+  id:"shadow", cls:"bers", name:"Shadow", sub:"Berserker · Tree II", attr:"Pack", tagline:"You are not fighting alone, and neither are they.",
+  priv:"Shade Wolves",
+  identity:"Shadow is the only Berserker tree built around things that are not you. <strong>Shade Wolves</strong> are a standing resource — summoned, positioned, buffed, and eventually spent. The tree deliberately cannot apply its own wounds well; it inherits them. That is the hole Hunter fills, and it is why Shadow is the strongest second pick in the class and a weak first one.",
+  cores:[
+    {h:"Private state — Shade Wolves",b:"Up to three persist. They are simultaneously damage, a positioning tool, and ammunition for the payoff."},
+    {h:"Imports wounds",b:"Ravenous Pack gives your wolves whatever debuff you apply. Without a second tree supplying one, that skill does nothing."},
+    {h:"Closed loop",b:"Wolf Shade makes wolves, Shadow Devour spends them. Thin, but it exists."},
+    {h:"Spends Frenzy on the pack",b:"Frenzy's guaranteed crits are shared with your wolves here, which is the only place in the class where the charge bar buffs something other than you."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Mobility and opener",note:"Shadow is the only tree in the game whose free opener is also its movement skill.",s:[
+     {n:"Shadow Burst",o:1,tags:["phys"],r:"Free opener. Take wolf form and lunge forward, leeching from everything struck on the way through."}
+   ]},
+   {t:3,lv:7,name:"The pack",note:"",s:[
+     {n:"Wolf Shade",o:1,tags:["util"],r:"Summon a Shade Wolf, to a maximum of three. They attack independently and inherit nothing until Tier 9."}
+   ]},
+   {t:5,lv:14,name:"Control",note:"",s:[
+     {n:"Shadowbind",o:1,tags:["util"],r:"Binds enemies within five metres and drags them toward your nearest Shade Wolf. Turns a scattered pack into one pile."}
+   ]},
+   {t:7,lv:21,name:"Teeth",note:"",s:[
+     {n:"Shred Armour",o:0,tags:["phys"],r:"Your wolves' bites Break Armour. The tree's only armour interaction, and it is delegated to the summons."}
+   ]},
+   {t:9,lv:28,name:"Inheritance",note:"The rung where the tree stops being self-contained on purpose.",s:[
+     {n:"Ravenous Pack",o:0,tags:["util"],r:"Your Shade Wolves apply whatever wound you apply — Rend from Hunter, Chill from Tundra. Inert with neither."}
+   ]},
+   {t:11,lv:35,name:"The payoff",note:"",s:[
+     {n:"Shadow Devour",o:0,tags:["phys"],r:"Consume a Shade Wolf to detonate it on a bound target, dealing damage scaled by every wound that wolf was carrying."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Red Wraith",o:0,tags:["phys"],r:"Your shadow separates and mirrors your attacks for a duration. It counts as a Shade Wolf for every other skill in the tree."}
+   ]}
+  ]
+},
+{
+  id:"tundra", cls:"bers", name:"Tundra", sub:"Berserker · Tree III", attr:"Freeze", tagline:"Make the ground hostile, then break it.",
+  priv:"Permafrost",
+  identity:"Tundra is the Berserker's area tree and its only ranged pressure. It lays <strong>Permafrost</strong> — frozen ground that accumulates Freeze on anything standing in it — and then shatters both the ground and the enemies at once. It is the class's most complete kit in isolation and the slowest to come online, because the payoff sits at the very top of the ladder.",
+  cores:[
+    {h:"Private state — Permafrost",b:"Persistent frozen ground. Enemies standing on it build Freeze several times faster, so Tundra fights by making enemies come to a place."},
+    {h:"Closed loop",b:"Permafrost freezes, Glacial Shatter detonates. Entirely internal, but only at Tier 13."},
+    {h:"Exports Frozen",b:"Frozen enemies are shatterable by anything. Shadow's wolves and Hunter's Executioner both cash them in earlier than Tundra can itself."},
+    {h:"Fills Frenzy slowest",b:"Low hit rate, high hit size. Tundra wants Hunter running underneath it to keep the Charge bar moving."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Frost Breath",o:1,tags:["cold"],r:"Free opener. A 90° cone of freezing wind that Immobilises and leaves foes Vulnerable for a few seconds."}
+   ]},
+   {t:3,lv:7,name:"Passive pressure",note:"",s:[
+     {n:"Chill Aura",o:0,tags:["cold"],r:"A standing aura that Chills everything nearby and slowly builds Freeze without you doing anything."}
+   ]},
+   {t:5,lv:14,name:"The ground",note:"",s:[
+     {n:"Permafrost",o:1,tags:["cold"],r:"Lays a field of frozen ground. Enemies standing on it accumulate Freeze several times faster and cannot be knocked out of it."}
+   ]},
+   {t:7,lv:21,name:"Storm",note:"",s:[
+     {n:"Northern Rage",o:1,tags:["cold","light"],r:"A storm of ice and lightning follows you, striking nearby foes. Its lightning is the tree's only Shock source."}
+   ]},
+   {t:9,lv:28,name:"Retaliation",note:"",s:[
+     {n:"Ice Shield",o:0,tags:["cold"],r:"Blows that strike you scatter frost, extending any Permafrost you are standing on."}
+   ]},
+   {t:11,lv:35,name:"Delivery",note:"",s:[
+     {n:"Frost Wave",o:0,tags:["cold"],r:"A wave that travels outward, freezing as it goes and accelerating across your own Permafrost."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Glacial Shatter",o:1,tags:["cold"],r:"Detonates every Frozen enemy and every field of Permafrost on screen simultaneously. The largest single hit in the class."}
+   ]}
+  ]
+},
+{
+  id:"inferno", cls:"ember", name:"Inferno", sub:"Embermage · Tree I", attr:"Burn", tagline:"Set the floor on fire and make them stand on it.",
+  priv:"Scorch",
+  identity:"Inferno converts everything into ground. Its skills leave <strong>Scorch</strong> — burning terrain that damages over time and, critically, that other Inferno skills read as a multiplier. The tree is a straightforward closed machine: lay Scorch, stand things in it, burn. Its weakness is that it has no way to move enemies, which is exactly what Frost and Storm supply.",
+  cores:[
+    {h:"Private state — Scorch",b:"Burning ground left by most Inferno skills. Several skills deal roughly double while the target stands in it."},
+    {h:"Closed loop",b:"Firebombs lay Scorch, Firestorm and Immolation Aura feed on it. Fully self-sufficient from Tier 5."},
+    {h:"Imports movement control",b:"Scorch only matters if enemies stay in it. Inferno has no pull, no bind, and no slow of its own."},
+    {h:"Ember Mastery pays double",b:"Free casts on a tree whose skills are cheap and spammable means Scorch coverage roughly doubles during the window."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Magma Spear",o:1,tags:["fire"],r:"Free opener. A channelled barrage of magma that pierces everything in a line and leaves each target aflame."}
+   ]},
+   {t:3,lv:7,name:"Close range",note:"",s:[
+     {n:"Magma Mace",o:1,tags:["fire"],r:"A conjured mace of fire slams a five-metre arc, stunning and igniting. The tree's answer to being reached."}
+   ]},
+   {t:5,lv:14,name:"The ground",note:"",s:[
+     {n:"Firebombs",o:1,tags:["fire"],r:"Three gouts of flame that ignite where they land, laying Scorch for several seconds."}
+   ]},
+   {t:7,lv:21,name:"Seeking damage",note:"",s:[
+     {n:"Blazing Pillar",o:1,tags:["fire"],r:"Four pillars of flame that seek out nearby foes. Each pillar leaves Scorch where it strikes."}
+   ]},
+   {t:9,lv:28,name:"Passive",note:"",s:[
+     {n:"Fire Brand",o:1,tags:["fire"],r:"Your hits carry fire and extend the duration of any Scorch beneath the target."}
+   ]},
+   {t:11,lv:35,name:"Sustained area",note:"",s:[
+     {n:"Immolation Aura",o:0,tags:["fire"],r:"Burns everything near you, and burns roughly twice as hard while you and the target share a field of Scorch."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Firestorm",o:1,tags:["fire"],r:"A sustained firestorm over a wide area. Every tick re-lays Scorch beneath it, so the ground never cools while it runs."}
+   ]}
+  ]
+},
+{
+  id:"frost", cls:"ember", name:"Frost", sub:"Embermage · Tree II", attr:"Lock", tagline:"Nothing here kills quickly. Nothing here gets to leave.",
+  priv:"Ice Prison",
+  identity:"Frost is a control tree that has been given just enough damage to function alone. Its private state, <strong>Ice Prison</strong>, is the hardest lock in the conversion: a fully encased enemy cannot act and takes amplified damage from every source, including other trees. Frost is therefore the Embermage's best <em>support</em> tree and its weakest solo one — deliberately, since it is the piece Inferno is missing.",
+  cores:[
+    {h:"Private state — Ice Prison",b:"A full encasement. The target cannot act and takes amplified damage from everything, which is why Frost pairs with any damage tree in the game."},
+    {h:"Exports the lock",b:"Frost's own damage is modest. The amplification is meant to be spent by Inferno's Scorch or Storm's chains."},
+    {h:"Owns the class's mobility",b:"Frost Phase is the only blink the Embermage has. An Inferno or Storm build takes Frost for this alone."},
+    {h:"Closed loop",b:"Icy Blast and Hailstorm build Freeze, Ice Prison converts it, Frozen Fate chains the shatter."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Icy Blast",o:1,tags:["cold"],r:"Free opener. Five ricocheting bolts of ice that slow, and immobilise on the second hit to the same target."}
+   ]},
+   {t:3,lv:7,name:"Area",note:"",s:[
+     {n:"Hailstorm",o:1,tags:["cold"],r:"Ice falls across a fifteen-metre radius, building Freeze on everything caught under it."}
+   ]},
+   {t:5,lv:14,name:"Mobility",note:"",s:[
+     {n:"Frost Phase",o:1,tags:["cold"],r:"Vanish and reappear elsewhere, dealing cold damage at both ends. The Embermage's only blink."}
+   ]},
+   {t:7,lv:21,name:"Support",note:"",s:[
+     {n:"Elemental Boon",o:1,tags:["util"],r:"An aura raising your elemental damage and resistances, and those of anything fighting alongside you."}
+   ]},
+   {t:9,lv:28,name:"The lock",note:"",s:[
+     {n:"Ice Prison",o:0,tags:["cold"],r:"Encases a Frozen enemy completely. It cannot act, and everything — yours or anyone's — hits it far harder."}
+   ]},
+   {t:11,lv:35,name:"Propagation",note:"",s:[
+     {n:"Frozen Fate",o:0,tags:["cold"],r:"Shattering a Frozen enemy chains the shatter to every other Frozen enemy near it."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Shatterstorm",o:0,tags:["cold"],r:"Breaks every Ice Prison on screen at once, each detonation carrying the amplification it had stored."}
+   ]}
+  ]
+},
+{
+  id:"storm", cls:"ember", name:"Storm", sub:"Embermage · Tree III", attr:"Chain", tagline:"Plant the poles, then let the current find them.",
+  priv:"Static Field",
+  identity:"Storm is a node-and-network tree. It plants <strong>Static Fields</strong> — small persistent charges — and the rest of the tree reads the battlefield as a graph of them. The more fields standing, the harder every lightning hit lands. It is the most positionally demanding tree in the conversion and the one that rewards a second tree's crowd control most directly.",
+  cores:[
+    {h:"Private state — Static Field",b:"Persistent charge nodes. Lightning hits arc between them, so damage scales with how many are planted rather than how hard you cast."},
+    {h:"Closed loop",b:"Thunder Locus plants fields, Lightning Brand and Arc Beam spend them. Self-sufficient from Tier 7."},
+    {h:"Imports gathering",b:"Fields are static; enemies are not. Frost's lock and Sigil-style pulls are what make the network land."},
+    {h:"Shocking Burst finally has a job",b:"The conversion gives Torchlight's least-loved skill the tree's seeding role — it is now the cheapest way to place a field."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Shocking Burst",o:1,tags:["light"],r:"Free opener. A short burst that leaves a small Static Field where it detonates — the cheapest node in the tree."}
+   ]},
+   {t:3,lv:7,name:"Workhorse",note:"",s:[
+     {n:"Prismatic Bolt",o:1,tags:["light"],r:"Bouncing bolts of shifting element. Each bounce that passes near a Static Field takes its damage type and doubles back."}
+   ]},
+   {t:5,lv:14,name:"The node",note:"",s:[
+     {n:"Thunder Locus",o:1,tags:["light"],r:"Plants a lasting static node that zaps continuously. The tree's primary Static Field source."}
+   ]},
+   {t:7,lv:21,name:"Passive",note:"",s:[
+     {n:"Lightning Brand",o:1,tags:["light"],r:"Your hits arc to the nearest Static Field, and from there to everything the field can reach."}
+   ]},
+   {t:9,lv:28,name:"Sustain",note:"",s:[
+     {n:"Death's Bounty",o:1,tags:["util"],r:"Enemies killed near a Static Field burst into health and mana orbs. The tree pays for its own upkeep."}
+   ]},
+   {t:11,lv:35,name:"The network",note:"",s:[
+     {n:"Arc Beam",o:0,tags:["light"],r:"A beam that links every Static Field on screen into one circuit, damaging everything standing between them."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Storm Crown",o:0,tags:["light"],r:"Collapses every Static Field at once, each discharging with the total charge the network accumulated."}
+   ]}
+  ]
+},
+{
+  id:"blitz", cls:"engi", name:"Blitz", sub:"Engineer · Tree I", attr:"Fuel", tagline:"Douse them first. Ask questions while they burn.",
+  priv:"Fuel",
+  identity:"Blitz is the Engineer's melee tree and the clearest producer-consumer machine in the conversion. It splashes <strong>Fuel</strong> — volatile, inert, and extremely flammable — then ignites it. Both halves live in the same tree, which makes Blitz the Engineer's only genuinely standalone pick, and the reason it is the class's default first tree.",
+  cores:[
+    {h:"Private state — Fuel",b:"Volatile fuel splashed onto enemies and ground. It does nothing at all until something applies fire, and then it does a great deal."},
+    {h:"Closed loop",b:"Seismic Slam douses, Flame Hammer ignites. Complete at Tier 7, the earliest closure of any tree here."},
+    {h:"Spends Overcharge hardest",b:"Sledgehammer and Emberquake both consume banked charges, so Blitz is where the Engineer's charge economy actually bites."},
+    {h:"Exports Burning",b:"Construction's grenades and Aegis's retaliation both light Fuel as readily as Blitz does."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Ember Hammer",o:1,tags:["phys"],r:"Free opener. A side-long swing that interrupts what it hits and shatters shields outright."}
+   ]},
+   {t:3,lv:7,name:"Mobility",note:"",s:[
+     {n:"Onslaught",o:1,tags:["phys"],r:"Leap forward and slam the ground on landing. The Engineer's gap-closer."}
+   ]},
+   {t:5,lv:14,name:"The douse",note:"",s:[
+     {n:"Seismic Slam",o:1,tags:["fire"],r:"A mechanically-augmented boot stamps the ground, stunning nearby foes and splashing them with volatile Fuel."}
+   ]},
+   {t:7,lv:21,name:"The ignition",note:"The tree closes its own loop two rungs earlier than anything else in the conversion.",s:[
+     {n:"Flame Hammer",o:1,tags:["fire"],r:"A flaming slam. Against a Fuel-soaked target it detonates the fuel instead of merely burning it."}
+   ]},
+   {t:9,lv:28,name:"Charge sink",note:"",s:[
+     {n:"Sledgehammer",o:0,tags:["phys"],r:"An overhead blow that consumes banked Overcharge, scaling with every charge spent."}
+   ]},
+   {t:11,lv:35,name:"Reach",note:"",s:[
+     {n:"Storm Burst",o:0,tags:["light"],r:"Discharges stored energy in a ring, shocking foes and igniting Fuel at a distance you cannot reach with a hammer."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Emberquake",o:1,tags:["fire"],r:"A rolling quake that travels outward, detonating every patch of Fuel it crosses along the way."}
+   ]}
+  ]
+},
+{
+  id:"construction", cls:"engi", name:"Construction", sub:"Engineer · Tree II", attr:"Bots", tagline:"Build the army, then spend it.",
+  priv:"Bots",
+  identity:"Construction is the conversion's other summon tree, and it is deliberately built to contrast with Shadow. Where Shade Wolves are cheap, fast and expendable, <strong>Bots</strong> are slow, durable and few — and every one of them can be detonated. The tree is playable alone but pays enormously for a partner that can gather enemies around a bot before it goes off.",
+  cores:[
+    {h:"Private state — Bots",b:"Durable constructs with long durations. Each can be detonated deliberately, which is what separates them from ordinary summons."},
+    {h:"Closed loop",b:"Gun Bot and Sledgebot build the army, Blast Cannon spends it. Slow to assemble, enormous when cashed."},
+    {h:"Owns the class's ranged damage",b:"Neither Blitz nor Aegis has meaningful reach. Construction's grenades are the Engineer's entire answer to distance."},
+    {h:"Imports gathering",b:"A detonated bot is only worth what is standing near it, and nothing in this tree pulls."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Spider Mines",o:1,tags:["fire"],r:"Free opener. Three spider drones scuttle to the nearest foe and explode. The cheapest bots in the tree."}
+   ]},
+   {t:3,lv:7,name:"The standing army",note:"",s:[
+     {n:"Gun Bot",o:1,tags:["phys"],r:"Assembles a drone that lays down gunfire for a full minute, independent of anything you do."}
+   ]},
+   {t:5,lv:14,name:"Sustain",note:"",s:[
+     {n:"Healing Bot",o:1,tags:["util"],r:"A bot that repairs you and anything fighting alongside you. Counts as a bot for every other skill here."}
+   ]},
+   {t:7,lv:21,name:"Control",note:"",s:[
+     {n:"Shock Grenade",o:1,tags:["light"],r:"An electrically-charged grenade that shocks and immobilises. The tree's only way to hold anything still."}
+   ]},
+   {t:9,lv:28,name:"Area",note:"",s:[
+     {n:"Fire Bomb",o:0,tags:["fire"],r:"A heavy incendiary lob that leaves burning ground — and lights any Fuel Blitz has splashed."}
+   ]},
+   {t:11,lv:35,name:"The heavy",note:"",s:[
+     {n:"Sledgebot",o:1,tags:["phys"],r:"A large melee construct that stuns in an arc. Slow, durable, and the best detonation platform in the tree."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Blast Cannon",o:0,tags:["fire"],r:"Fires a shell that detonates every bot you have deployed, each explosion scaled to that bot's remaining durability."}
+   ]}
+  ]
+},
+{
+  id:"aegis", cls:"engi", name:"Aegis", sub:"Engineer · Tree III", attr:"Bulwark", tagline:"Every blow you survive is a blow you now own.",
+  priv:"Bulwark",
+  identity:"Aegis is the conversion's one defensive tree that is also a damage tree, because the damage is the defence spent back. Blocked and absorbed hits accumulate as <strong>Bulwark</strong>, and the tree's payoffs convert that stored total into output. It produces nothing offensive on its own — it needs to be hit — which makes it the Engineer's most dependent tree and its best third pick.",
+  cores:[
+    {h:"Private state — Bulwark",b:"Damage you blocked or absorbed, banked rather than discarded. The tree's whole output is stored defence released."},
+    {h:"Inverted economy",b:"Every other tree here spends resources to deal damage. Aegis spends incoming damage, so it gets stronger the worse the fight goes."},
+    {h:"Imports aggression",b:"Nothing in Aegis makes enemies attack you. Blitz's leap and Construction's bots are what put you in range to be hit."},
+    {h:"Closed loop",b:"Force Field absorbs, Dynamo Field banks, Aegis of Fate releases."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Shield Bash",o:1,tags:["phys"],r:"Free opener. A shield shove that slows and interrupts. Generates a little Bulwark even when it does not block."}
+   ]},
+   {t:3,lv:7,name:"Absorption",note:"",s:[
+     {n:"Force Field",o:1,tags:["util"],r:"An armour-generated aura that absorbs incoming damage. Everything it absorbs is banked rather than lost."}
+   ]},
+   {t:5,lv:14,name:"Control",note:"",s:[
+     {n:"Immobilization Copter",o:1,tags:["util"],r:"A drone that pins foes in place around you — which is also how you make them keep hitting you."}
+   ]},
+   {t:7,lv:21,name:"Punish",note:"",s:[
+     {n:"Coup de Grace",o:0,tags:["phys"],r:"A finisher against a target that has recently struck you, scaled by the Bulwark that blow generated."}
+   ]},
+   {t:9,lv:28,name:"The bank",note:"",s:[
+     {n:"Dynamo Field",o:0,tags:["light"],r:"Converts blocked and absorbed damage into stored Bulwark at a far better rate, and shocks whatever landed the blow."}
+   ]},
+   {t:11,lv:35,name:"Sustain",note:"",s:[
+     {n:"Bulwark",o:0,tags:["util"],r:"Spends stored Bulwark as a shield over your health rather than as damage. The defensive way to cash out."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Aegis of Fate",o:0,tags:["util"],r:"Releases the entire Bulwark bank as a detonation centred on you, scaled by every hit you took to fill it."}
+   ]}
+  ]
+},
+{
+  id:"warfare", cls:"out", name:"Warfare", sub:"Outlander · Tree I", attr:"Suppress", tagline:"Volume of fire, until the armour stops mattering.",
+  priv:"Suppression",
+  identity:"Warfare is the Outlander's gun tree and the conversion's sustained-fire archetype. Rather than large hits it applies <strong>Suppression</strong>, a stacking strip that degrades armour and accuracy the longer you keep firing at the same target. It is the most straightforwardly complete tree in the class and the one that most wants a partner able to hold a target still.",
+  cores:[
+    {h:"Private state — Suppression",b:"Stacks while you keep firing at the same target and decays fast when you stop. Rewards commitment to one enemy."},
+    {h:"Closed loop",b:"Rapid Fire suppresses, Death Ray spends the stacks. Self-sufficient, if slow to reach."},
+    {h:"Owns the class's mobility",b:"Rune Vault is the Outlander's only escape, and it leaves damage behind it. Both other trees take Warfare for this."},
+    {h:"Focus is a range resource",b:"Spent here on pierce and range rather than raw damage, so Suppression can be maintained from safety."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Rapid Fire",o:1,tags:["phys"],r:"Free opener. A burst of projectiles that forces enemies back and strips armour, applying a stack of Suppression per burst."}
+   ]},
+   {t:3,lv:7,name:"Mobility",note:"",s:[
+     {n:"Rune Vault",o:1,tags:["util"],r:"Vault backward, leaving a mystic sigil that damages and blinds within four metres of where you were."}
+   ]},
+   {t:5,lv:14,name:"Clear",note:"",s:[
+     {n:"Chaos Burst",o:1,tags:["phys"],r:"Three chaotic projectiles that ricochet off walls and each other. Spreads Suppression thinly across a pack."}
+   ]},
+   {t:7,lv:21,name:"Single target",note:"",s:[
+     {n:"Shadowshot",o:0,tags:["phys"],r:"A shot that splits in shadow, every fragment carrying Suppression to the same target."}
+   ]},
+   {t:9,lv:28,name:"Passive",note:"",s:[
+     {n:"Long Range Mastery",o:1,tags:["util"],r:"Greater range and damage with long-distance weapons, and Suppression decays more slowly at range."}
+   ]},
+   {t:11,lv:35,name:"Dual wield",note:"",s:[
+     {n:"Akimbo",o:1,tags:["phys"],r:"Two pistols fire as one, doubling Suppression application at the cost of everything beyond mid range."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Death Ray",o:0,tags:["light"],r:"A sustained beam that consumes Suppression continuously, growing hotter the more stacks it burns through."}
+   ]}
+  ]
+},
+{
+  id:"lore", cls:"out", name:"Lore", sub:"Outlander · Tree II", attr:"Glaive", tagline:"The weapon leaves your hand and stays yours.",
+  priv:"Glaive in flight",
+  identity:"Lore is built on a single unusual idea: the <strong>glaive in flight</strong> is a persistent object, not an attack that resolves. While a glaive is travelling, other Lore skills read it, redirect it and detonate it. This gives the tree a rhythm no other has — you are managing an object's position rather than a resource's quantity — and it is the reason Lore plays entirely differently from Warfare despite both being ranged.",
+  cores:[
+    {h:"Private state — Glaive in flight",b:"A thrown glaive persists as a tracked object while it travels. Several skills only function while one is airborne."},
+    {h:"Closed loop",b:"Glaive Throw launches, Shattering Glaive detonates. The loop is about timing rather than accumulation."},
+    {h:"Needs no weapon",b:"Glaives are conjured, so Lore works with any gear. It is the Outlander's answer to a bad weapon drop."},
+    {h:"Exports Slow",b:"Shattering Glaive's slow is the widest crowd control the class has, and Warfare's Suppression wants targets that cannot close."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Glaive Throw",o:1,tags:["phys"],r:"Free opener. Hurl a glaive that slices through its target, rebounds once to strike again, and generates extra Focus."}
+   ]},
+   {t:3,lv:7,name:"Poison",note:"",s:[
+     {n:"Poison Burst",o:1,tags:["chaos"],r:"A burst of venom around a glaive in flight, so the cloud travels with the weapon."}
+   ]},
+   {t:5,lv:14,name:"Terrain",note:"",s:[
+     {n:"Bramble Wall",o:1,tags:["chaos"],r:"A wall of thorns. Glaives that strike it rebound at a sharper angle instead of expiring."}
+   ]},
+   {t:7,lv:21,name:"Area",note:"",s:[
+     {n:"Glaive Sweep",o:0,tags:["phys"],r:"Recalls every glaive in flight in a wide arc back through the pack it just passed."}
+   ]},
+   {t:9,lv:28,name:"Passive",note:"",s:[
+     {n:"Master of the Elements",o:1,tags:["util"],r:"Your glaives take the element of whatever last struck their target, including another tree's."}
+   ]},
+   {t:11,lv:35,name:"Detonation",note:"",s:[
+     {n:"Shattering Glaive",o:1,tags:["cold"],r:"A glaive that shatters on impact, damaging and slowing everything in a large radius around the break."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Stone Pact",o:0,tags:["phys"],r:"Every glaive in flight shatters at once, each carrying whatever element Master of the Elements gave it."}
+   ]}
+  ]
+},
+{
+  id:"sigil", cls:"out", name:"Sigil", sub:"Outlander · Tree III", attr:"Runes", tagline:"Write it on the floor and make them walk across it.",
+  priv:"Sigils",
+  identity:"Sigil is the conversion's placement tree and the Outlander's contribution to everyone else's build. It writes <strong>Sigils</strong> on the ground — runes that pull, curse and poison whatever crosses them. Its own damage is poor by design; its job is to decide where the fight happens, which is precisely what Warfare, Lore, and half the other classes' trees are missing.",
+  cores:[
+    {h:"Private state — Sigils",b:"Persistent ground runes. Each has an effect on crossing and a second effect when another Sigil overlaps it."},
+    {h:"Exports gathering",b:"Vortex Hex is the single best pull in the conversion, and almost every area payoff in the game wants one."},
+    {h:"Weak alone on purpose",b:"Sigil has the lowest solo damage of the twelve trees. It is a support kit that happens to sit inside a damage class."},
+    {h:"Closed loop",b:"Repulsion Hex and Vortex Hex place the field, Cursed Daggers and Death's Grasp cash what walks into it."}
+  ],
+  t:[
+   {t:1,lv:1,name:"Opener",note:"",s:[
+     {n:"Repulsion Hex",o:0,tags:["util"],r:"Free opener. A rune that shoves foes away from it — the tree's only defensive placement."}
+   ]},
+   {t:3,lv:7,name:"Area denial",note:"",s:[
+     {n:"Sandstorm",o:0,tags:["chaos"],r:"A blinding storm anchored to a sigil, obscuring everything that stands inside it."}
+   ]},
+   {t:5,lv:14,name:"Snare",note:"",s:[
+     {n:"Tangling Shot",o:0,tags:["chaos"],r:"A shot that roots its target and anchors a sigil beneath it."}
+   ]},
+   {t:7,lv:21,name:"The curse",note:"",s:[
+     {n:"Cursed Daggers",o:1,tags:["chaos"],r:"Nine piercing daggers that poison and cripple, reducing the damage everything they hit deals."}
+   ]},
+   {t:9,lv:28,name:"The pull",note:"The most exported skill in the conversion.",s:[
+     {n:"Vortex Hex",o:1,tags:["util"],r:"Summons a fetish that drags nearby foes toward it and holds them there."}
+   ]},
+   {t:11,lv:35,name:"Overlap",note:"",s:[
+     {n:"Stone Pact",o:0,tags:["util"],r:"Sigils that overlap fuse into one larger rune carrying both effects at full strength."}
+   ]},
+   {t:13,lv:42,name:"Capstone",note:"",s:[
+     {n:"Death's Grasp",o:0,tags:["chaos"],r:"Every Sigil on the field erupts, and anything standing on two or more is pulled apart between them."}
+   ]}
+  ]
+}
+];
+
+/* ---- interaction states ---- */
+const CHAINS = [
+{id:"rend",name:"Rend",hue:"phys",
+ d:"A stacking wound that does almost nothing on its own and becomes a whole tree's damage when something consumes it. Hunter's private state, and the clearest single-tree closed loop in the conversion.",
+ p:[["hunter","Eviscerate"],["hunter","Wolfstrike"],["hunter","Howl"],["hunter","Ravage"]],
+ c:[["hunter","Executioner"],["shadow","Ravenous Pack"],["shadow","Shadow Devour"]],
+ note:"Hunter closes this loop entirely by itself. What makes it interesting is Shadow's Ravenous Pack, which hands Rend application to your wolves — a Hunter/Shadow Berserker applies the wound from four bodies at once and detonates it with Shadow Devour instead of Executioner."},
+{id:"wolves",name:"Shade Wolves",hue:"util",
+ d:"Up to three summoned wolves that persist, fight independently, and can be spent. Unusually for a summon, they are ammunition as much as allies.",
+ p:[["shadow","Wolf Shade"],["shadow","Red Wraith"]],
+ c:[["shadow","Shadowbind"],["shadow","Shred Armour"],["shadow","Ravenous Pack"],["shadow","Shadow Devour"]],
+ note:"Shadow is the only tree where the private state is also the delivery mechanism for every other tree's debuffs. Red Wraith counts as a wolf, which means the capstone quietly feeds the whole ladder beneath it."},
+{id:"permafrost",name:"Permafrost",hue:"cold",
+ d:"Frozen ground that massively accelerates Freeze buildup on anything standing in it, and that can itself be shattered.",
+ p:[["tundra","Permafrost"],["tundra","Ice Shield"]],
+ c:[["tundra","Frost Wave"],["tundra","Glacial Shatter"]],
+ note:"Tundra's loop closes only at Tier 13, which is the latest closure in the conversion and deliberately so — Tundra is meant to be the Berserker's third tree, taken once Hunter or Shadow is already carrying the early game."},
+{id:"scorch",name:"Scorch",hue:"fire",
+ d:"Burning ground left by most Inferno skills. Several Inferno skills read it as a damage multiplier rather than merely stacking with it.",
+ p:[["inferno","Firebombs"],["inferno","Blazing Pillar"],["inferno","Firestorm"],["inferno","Magma Spear"]],
+ c:[["inferno","Immolation Aura"],["inferno","Fire Brand"],["inferno","Firestorm"]],
+ note:"Firestorm sits on both sides — it consumes Scorch and re-lays it every tick, which is what makes it a capstone rather than just a big spell. The tree's real weakness is that Scorch is stationary and Inferno cannot move anyone onto it."},
+{id:"prison",name:"Ice Prison",hue:"cold",
+ d:"A complete encasement. The target cannot act and takes amplified damage from every source — including sources belonging to a different tree or a different player.",
+ p:[["frost","Ice Prison"],["frost","Hailstorm"],["frost","Icy Blast"]],
+ c:[["frost","Frozen Fate"],["frost","Shatterstorm"],["inferno","Immolation Aura"],["storm","Arc Beam"],["tundra","Glacial Shatter"]],
+ note:"The most widely exported state in the conversion. Frost deals mediocre damage and amplifies everyone else's, which is why it is the Embermage's best second tree regardless of what the first one was — and why a Frost/Tundra pairing across two characters is the strongest thing in the game."},
+{id:"static",name:"Static Field",hue:"light",
+ d:"Persistent charge nodes planted on the ground. Lightning hits arc between them, so Storm's damage scales with how many are standing rather than how hard any single cast is.",
+ p:[["storm","Thunder Locus"],["storm","Shocking Burst"],["storm","Prismatic Bolt"]],
+ c:[["storm","Lightning Brand"],["storm","Arc Beam"],["storm","Storm Crown"],["storm","Death's Bounty"]],
+ note:"Storm is the most positionally demanding tree here. Fields are static and enemies are not, so the tree's practical damage is set almost entirely by whatever gathers the pack — Frost's lock, or Sigil's pull on another character."},
+{id:"fuel",name:"Fuel",hue:"fire",
+ d:"Volatile fuel splashed onto enemies and ground. Completely inert until fire touches it.",
+ p:[["blitz","Seismic Slam"]],
+ c:[["blitz","Flame Hammer"],["blitz","Storm Burst"],["blitz","Emberquake"],["construction","Fire Bomb"],["inferno","Magma Spear"],["inferno","Firestorm"]],
+ note:"The conversion's most borrowable state. Fuel needs only 'some fire', and fire is everywhere — Construction's incendiary, Inferno's anything. A single Tier 5 Blitz skill therefore upgrades every fire source in the game by a large margin, which is exactly how Gas Arrow behaves in Path of Exile 2."},
+{id:"bots",name:"Bots",hue:"phys",
+ d:"Durable constructs with long durations that can be detonated deliberately. Slow to assemble and enormous when spent.",
+ p:[["construction","Gun Bot"],["construction","Spider Mines"],["construction","Healing Bot"],["construction","Sledgebot"]],
+ c:[["construction","Blast Cannon"],["aegis","Coup de Grace"]],
+ note:"Deliberately the mirror of Shade Wolves: few, slow and durable where wolves are many, fast and expendable. Both trees detonate their summons, and comparing the two is the cleanest illustration of how far the same mechanical slot can be pushed in different directions."},
+{id:"bulwark",name:"Bulwark",hue:"util",
+ d:"Damage you blocked or absorbed, banked instead of discarded, and released later as either damage or a shield.",
+ p:[["aegis","Force Field"],["aegis","Dynamo Field"],["aegis","Shield Bash"]],
+ c:[["aegis","Coup de Grace"],["aegis","Bulwark"],["aegis","Aegis of Fate"]],
+ note:"The only inverted economy in the conversion: every other tree spends a resource to deal damage, and Aegis spends incoming damage. It has no way to make enemies attack it, so it is structurally incapable of being a first tree — which is the deliberate hole."},
+{id:"suppress",name:"Suppression",hue:"phys",
+ d:"A stacking strip that degrades armour and accuracy while you keep firing at the same target, and decays quickly the moment you stop.",
+ p:[["warfare","Rapid Fire"],["warfare","Chaos Burst"],["warfare","Shadowshot"],["warfare","Akimbo"]],
+ c:[["warfare","Death Ray"],["warfare","Long Range Mastery"]],
+ note:"Suppression punishes target-switching, which is unusual for a ranged tree and is what stops Warfare from simply being the best pick in every Outlander build. It wants something that holds one enemy still — Sigil's Vortex Hex, or Lore's slow."},
+{id:"glaive",name:"Glaive in flight",hue:"phys",
+ d:"A thrown glaive treated as a persistent tracked object rather than an attack that resolves. Several skills function only while one is airborne.",
+ p:[["lore","Glaive Throw"],["lore","Bramble Wall"]],
+ c:[["lore","Poison Burst"],["lore","Glaive Sweep"],["lore","Shattering Glaive"],["lore","Stone Pact"],["lore","Master of the Elements"]],
+ note:"The only state in the conversion measured in position and time rather than quantity. You are not accumulating stacks, you are keeping an object alive and steering it — which makes Lore feel unlike any other tree despite sharing a ladder shape with all of them."},
+{id:"sigils",name:"Sigils",hue:"util",
+ d:"Persistent runes written on the ground, each with an effect on crossing and a second effect when another Sigil overlaps it.",
+ p:[["sigil","Repulsion Hex"],["sigil","Sandstorm"],["sigil","Tangling Shot"],["sigil","Vortex Hex"],["warfare","Rune Vault"]],
+ c:[["sigil","Stone Pact"],["sigil","Death's Grasp"],["sigil","Cursed Daggers"]],
+ note:"Rune Vault is the crossover: a Warfare mobility skill that happens to write a Sigil, so a Warfare/Sigil Outlander gets a free rune every time it escapes. That is the conversion's single best cross-tree accident, and it is inherited straight from Torchlight's original skill description."},
+{id:"gather",name:"Gathering",hue:"util",
+ d:"Pulling a scattered pack into one place. Not a damage effect at all — but almost every capstone in the conversion is an area detonation, so whatever gathers is worth more than whatever detonates.",
+ p:[["sigil","Vortex Hex"],["shadow","Shadowbind"],["aegis","Immobilization Copter"],["frost","Ice Prison"],["construction","Shock Grenade"]],
+ c:[["tundra","Glacial Shatter"],["inferno","Firestorm"],["storm","Storm Crown"],["construction","Blast Cannon"],["sigil","Death's Grasp"],["blitz","Emberquake"],["aegis","Aegis of Fate"]],
+ note:"The most important chain on this page and the one that most shapes which trees pair. Seven of the twelve capstones are area detonations and only five skills in the entire conversion gather. Any build holding two detonators and no gatherer is misbuilt, which is the constraint that stops every character converging on the same three trees."},
+{id:"armour",name:"Broken Armour",hue:"phys",
+ d:"Stripped physical mitigation. The one state in the conversion that every class can both apply and exploit, inherited directly from Path of Exile 2's most transferable setup.",
+ p:[["hunter","Ravage"],["shadow","Shred Armour"],["blitz","Ember Hammer"],["warfare","Rapid Fire"]],
+ c:[["hunter","Executioner"],["blitz","Sledgehammer"],["construction","Sledgebot"],["warfare","Death Ray"],["lore","Stone Pact"]],
+ note:"Broken Armour is the lingua franca. It is the reason a Berserker's Ravage improves an Engineer's Sledgebot in the same party, and the only state here that crosses all four classes."},
+{id:"burning",name:"Burning",hue:"fire",
+ d:"Ordinary fire damage over time. Included here not for its own damage but because it is the universal detonator: Fuel, Scorch and incendiary ground all answer to it.",
+ p:[["inferno","Magma Spear"],["inferno","Magma Mace"],["inferno","Firestorm"],["blitz","Flame Hammer"],["construction","Fire Bomb"],["construction","Spider Mines"]],
+ c:[["blitz","Emberquake"],["inferno","Immolation Aura"]],
+ note:"Fire is the generic half of two different interactions. That asymmetry — bespoke producers, generic consumers — is lifted directly from Path of Exile 2, where any fire hit detonates a gas cloud and the interesting design work is all on the production side."},
+{id:"frozen",name:"Frozen",hue:"cold",
+ d:"Enemies frozen solid, shatterable by anything. Distinct from Ice Prison, which is a single-target lock rather than a mass state.",
+ p:[["tundra","Frost Breath"],["tundra","Chill Aura"],["tundra","Permafrost"],["frost","Icy Blast"],["frost","Hailstorm"],["frost","Frost Phase"]],
+ c:[["tundra","Glacial Shatter"],["frost","Frozen Fate"],["frost","Shatterstorm"],["lore","Shattering Glaive"]],
+ note:"The two cold trees in the conversion belong to different classes and never meet in one character, which is intentional: Tundra freezes an area and Frost locks a target, so they solve opposite problems with the same element."}
+];
+
+/* ---- index ---- */
+const byId = Object.fromEntries(W.map(w=>[w.id,w]));
+const ALL = [];
+W.forEach(w=>w.t.forEach(g=>g.s.forEach(s=>ALL.push({...s,w:w.id,wn:w.name,t:g.t,lv:g.lv}))));
+const findSkill=(wid,nm)=>ALL.find(s=>s.w===wid&&s.n===nm);
+const SREL={};
+CHAINS.forEach(ch=>{
+  ch.p.forEach(([w,n])=>{const k=w+"/"+n;(SREL[k]=SREL[k]||{out:[],in:[]}).out.push(ch.id)});
+  ch.c.forEach(([w,n])=>{const k=w+"/"+n;(SREL[k]=SREL[k]||{out:[],in:[]}).in.push(ch.id)});
+});
+const chainById=Object.fromEntries(CHAINS.map(c=>[c.id,c]));
+
+let view={mode:"tree",wid:"hunter"}, sel={w:"hunter",n:"Eviscerate"}, query="";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function drawRail(){
+  let h="";
+  Object.keys(CLASSES).forEach(cid=>{
+    h+=`<div class="railcap"><span class="cdot" style="background:${CLASSES[cid].color}"></span>${esc(CLASSES[cid].name)}</div>`;
+    W.filter(w=>w.cls===cid).forEach(w=>{
+      h+=`<button class="wbtn" data-w="${w.id}" aria-current="${view.mode==="tree"&&view.wid===w.id}">
+        <span>${esc(w.name)}</span><span class="at">${esc(w.attr)}</span></button>`;
+    });
+  });
+  h+='<div class="raildiv"></div><div class="railcap">Reference</div>';
+  h+=`<button class="wbtn" data-v="atlas" aria-current="${view.mode==="atlas"}"><span>Interaction Atlas</span></button>`;
+  h+=`<button class="wbtn" data-v="rules" aria-current="${view.mode==="rules"}"><span>Conversion Rules</span></button>`;
+  document.getElementById("rail").innerHTML=h;
+}
+const tagHtml=t=>(t||[]).map(x=>`<span class="tg ${x}">${x}</span>`).join("");
+function skillCard(s,wid){
+  const on=sel.w===wid&&sel.n===s.n;
+  return `<button class="skill" data-s="${esc(s.n)}" data-sw="${wid}" aria-pressed="${on}">
+    <span class="sname">${esc(s.n)}${s.o?'<span class="orig">TL2</span>':'<span class="new">NEW</span>'}</span>
+    <span class="tags">${tagHtml(s.tags)}</span>
+    <span class="srole">${esc(s.r)}</span></button>`;
+}
+function drawTree(w){
+  const C=CLASSES[w.cls];
+  let h=`<div class="whead">
+    <div class="eyebrow" style="color:${C.color}">${esc(w.sub)}</div>
+    <h2>${esc(w.name)}</h2>
+    <div class="tagline">${esc(w.tagline)}</div>
+    <div class="meta">
+      <span class="mchip">PRIVATE STATE <b>${esc(w.priv)}</b></span>
+      <span class="mchip">CLASS CHARGE <b>${esc(C.charge)}</b></span>
+      <span class="mchip">RUNGS <b>7</b></span>
+    </div>
+    <p class="prose">${w.identity}</p></div>`;
+  h+=`<div class="cores">${w.cores.map(c=>`<div class="core"><h4>${esc(c.h)}</h4><p>${esc(c.b)}</p></div>`).join("")}</div>`;
+  h+=`<div class="ladder"><h3>Ladder — Torchlight level → Path of Exile gem tier</h3>`;
+  w.t.forEach(g=>{
+    h+=`<div class="tier">
+      <div class="gut"><div class="gemno">${g.t}</div><div class="gemlbl">Gem T${g.t}<br>TL2 Lv.${g.lv}</div></div>
+      <div class="tbody">
+        ${g.name?`<div class="tname">${esc(g.name)}</div>`:""}
+        ${g.note?`<p class="tnote">${esc(g.note)}</p>`:'<div style="height:7px"></div>'}
+        <div class="grid">${g.s.map(s=>skillCard(s,w.id)).join("")}</div>
+      </div></div>`;
+  });
+  return h+`</div>`;
+}
+function refList(a){
+  return `<div class="reflist">${a.map(([w,n])=>{
+    const wn=byId[w]?byId[w].name:w;
+    return `<div class="ref"><span class="refw">${esc(wn)}</span><button class="xlink" data-s="${esc(n)}" data-sw="${w}">${esc(n)}</button></div>`;
+  }).join("")}</div>`;
+}
+function drawAtlas(){
+  let h=`<div class="whead"><div class="eyebrow" style="color:var(--accent)">Cross-tree reference</div>
+    <h2>Interaction Atlas</h2>
+    <div class="tagline">Twelve private states, four shared ones, and the reason no tree is worth taking three times.</div>
+    <p class="prose">Each tree owns a state nothing else produces — that is its identity. The four states at the bottom of this list are shared, and they are what make one tree improve another. <strong>Gathering is the one to read first:</strong> seven of the twelve capstones are area detonations, and only five skills in the entire conversion pull a pack together.</p>
+    </div><div class="ladder"><h3>${CHAINS.length} states</h3>`;
+  CHAINS.forEach(ch=>{
+    const tp=new Set([...ch.p.map(x=>x[0]),...ch.c.map(x=>x[0])]);
+    const cross=tp.size>1;
+    h+=`<section class="chain"><header>
+        <h3>${esc(ch.name)} <span class="tg ${cross?"util":"phys"}" style="vertical-align:middle">${cross?tp.size+" trees":"single tree"}</span></h3>
+        <p>${ch.d}</p></header>
+      <div class="flow">
+        <div class="side p"><h5>Applied by</h5>${refList(ch.p)}</div>
+        <div class="arrow mono">&rarr;</div>
+        <div class="side c"><h5>Spent by</h5>${refList(ch.c)}</div>
+      </div>
+      <div class="foot">${ch.note}</div></section>`;
+  });
+  return h+`</div>`;
+}
+function drawRules(){
+  return `<div class="whead"><div class="eyebrow" style="color:var(--accent)">Method</div>
+    <h2>Conversion Rules</h2>
+    <div class="tagline">What was kept, what was changed, and what was invented.</div></div>
+  <div class="ladder">
+  <section class="sblock"><h3>The ladder maps one-to-one</h3>
+    <p>Torchlight II unlocks a tree's skills at character levels <strong>1, 7, 14, 21, 28, 35 and 42</strong>. Path of Exile 2 gates weapon skills behind Uncut Skill Gem tiers <strong>1, 3, 5, 7, 9, 11 and 13</strong>. Both are seven rungs, so the conversion needed no compression or padding: TL2 level 1 becomes Gem Tier 1, level 7 becomes Tier 3, and so on to level 42 becoming Tier 13.</p>
+    <p>Where a skill's real Torchlight level is known it keeps its rung — Rune Vault stays at level 7, Cursed Daggers at 21, Vortex Hex at 28, Shattering Glaive at 35. Trees carry one skill per rung here rather than Torchlight's fuller lists, because a Path of Exile weapon ladder is a progression of <em>roles</em> and duplicating a role twice on one rung defeats the exercise.</p>
+  </section>
+  <section class="sblock"><h3>Every tree is a weapon kit</h3>
+    <p>The requirements are taken from what shipped Path of Exile 2 weapons actually have in common. Each of the twelve trees gets:</p>
+    <div class="scroll"><table class="tbl">
+      <thead><tr><th>Requirement</th><th>Why</th></tr></thead>
+      <tbody>
+      <tr><td>A free opener at Tier 1</td><td>Every PoE 2 weapon has a default attack needing no gem. Here it is the tree's level-1 skill, free and unlimited.</td></tr>
+      <tr><td>A private state</td><td>The thing only this tree produces. It is the tree's identity and the reason to take it at all.</td></tr>
+      <tr><td>At least one closed loop</td><td>The tree must make and spend its own state, so it is playable alone through the campaign.</td></tr>
+      <tr><td>A mobility skill</td><td>Not in every tree — as in PoE 2, where crossbow has none — but in at least one tree per class, so every class can move.</td></tr>
+      <tr><td>A deliberate hole</td><td>Something the tree needs and cannot supply. This is what gives the second and third tree picks a job.</td></tr>
+      <tr><td>A capstone at Tier 13</td><td>Torchlight's level-42 skill becomes the payoff the whole ladder was building toward.</td></tr>
+      </tbody></table></div>
+  </section>
+  <section class="sblock"><h3>Three trees replace the weapon swap</h3>
+    <p>Path of Exile 2 answers "how do we make players use more than one skill?" with two weapon sets and 24 specialised passive points. Torchlight II already had the answer built in: <strong>you pick three trees and they are always all active.</strong> The conversion leans on that rather than importing weapon sets — the sibling tree <em>is</em> the second weapon set, permanently equipped.</p>
+    <p>That changes the balance of the exercise in one specific way. In Path of Exile a weapon swap costs a keypress and a moment, so a cross-set combination has real friction. Here there is none, which means the deliberate holes have to be larger to matter. Aegis producing no aggression and Sigil producing almost no damage are both sized for a world with no swap cost.</p>
+  </section>
+  <section class="sblock"><h3>The class charge bar is the fourth resource</h3>
+    <p>All four Torchlight classes have a charge bar that fills in combat and does something different per class. The conversion keeps this as the one state every tree in a class touches — the equivalent of Path of Exile 2's Spirit skills, which belong to no weapon and glue two sets together.</p>
+    <div class="scroll"><table class="tbl">
+      <thead><tr><th>Class</th><th>Charge</th><th>Role in the conversion</th></tr></thead>
+      <tbody>
+      ${Object.keys(CLASSES).map(k=>`<tr><td>${esc(CLASSES[k].name)}</td><td>${esc(CLASSES[k].charge)}</td><td>${esc(CLASSES[k].note)}</td></tr>`).join("")}
+      </tbody></table></div>
+  </section>
+  <section class="sblock"><h3>What I changed, and the one thing I would not</h3>
+    <p>Skills whose Torchlight function had no place in a producer-consumer kit were given a new job rather than dropped. <strong>Shocking Burst</strong> is the clearest case: widely considered Torchlight's weakest skill, it becomes Storm's cheapest way to plant a Static Field, which is a role the tree genuinely needs at Tier 1.</p>
+    <p>The one thing carried over untouched is <strong>Rune Vault</strong>. Torchlight's own description — vault backward, leaving a sigil that damages and blinds — is already a producer-consumer interaction spanning two trees, written in 2012. It needed no conversion at all, and it is the best evidence that this exercise is drawing out something that was latent in Torchlight rather than imposing something foreign on it.</p>
+  </section>
+  </div>`;
+}
+function drawSearch(q){
+  const t=q.toLowerCase();
+  const hits=ALL.filter(s=>s.n.toLowerCase().includes(t)||s.r.toLowerCase().includes(t)||s.wn.toLowerCase().includes(t)||(s.tags||[]).some(x=>x.includes(t)));
+  const ch=CHAINS.filter(c=>c.name.toLowerCase().includes(t)||c.d.toLowerCase().includes(t));
+  let h=`<div class="whead"><div class="eyebrow" style="color:var(--accent)">Search</div><h2>&ldquo;${esc(q)}&rdquo;</h2>
+    <div class="tagline">${hits.length} skill${hits.length===1?"":"s"}${ch.length?` · ${ch.length} state${ch.length===1?"":"s"}`:""}</div></div><div class="ladder">`;
+  if(ch.length) h+=`<h3>States</h3><div class="grid" style="margin-bottom:24px">`+ch.map(c=>
+    `<button class="skill" data-c="${c.id}"><span class="sname">${esc(c.name)}</span><span class="srole">${esc(c.d.slice(0,110))}…</span></button>`).join("")+`</div>`;
+  if(hits.length){
+    h+=`<h3>Skills</h3>`;
+    const g={}; hits.forEach(s=>(g[s.w]=g[s.w]||[]).push(s));
+    Object.keys(g).forEach(wid=>{
+      h+=`<div class="tname" style="margin-top:15px">${esc(byId[wid].name)}</div>
+        <p class="tnote">${esc(byId[wid].sub)}</p>
+        <div class="grid">${g[wid].map(s=>skillCard(s,wid)).join("")}</div>`;
+    });
+  }
+  if(!hits.length&&!ch.length) h+=`<p class="empty">Nothing matches. Try a tree name, a damage type, or a state like <span class="mono">fuel</span> or <span class="mono">gathering</span>.</p>`;
+  return h+`</div>`;
+}
+function drawDetail(){
+  const d=document.getElementById("detail");
+  if(sel.c){
+    const ch=chainById[sel.c];
+    d.innerHTML=`<div class="dhead"><div class="from">Interaction state</div><h3>${esc(ch.name)}</h3>
+      <span class="tags">${tagHtml([ch.hue])}</span></div>
+      <div class="dsec"><h5>What it is</h5><p>${ch.d}</p></div>
+      <div class="dsec"><h5>Applied by</h5>${refList(ch.p)}</div>
+      <div class="dsec"><h5>Spent by</h5>${refList(ch.c)}</div>
+      <div class="dsec"><h5>How it plays</h5><p>${ch.note}</p></div>`;
+    return;
+  }
+  const s=findSkill(sel.w,sel.n);
+  if(!s){d.innerHTML=`<p class="empty">Pick a skill to see how it connects.</p>`;return;}
+  const w=byId[s.w], C=CLASSES[w.cls];
+  const rel=SREL[s.w+"/"+s.n]||{out:[],in:[]};
+  let h=`<div class="dhead">
+    <div class="from">${esc(C.name)} · ${esc(w.name)} · Gem T${s.t} / Lv.${s.lv}</div>
+    <h3>${esc(s.n)}</h3><span class="tags">${tagHtml(s.tags)}</span></div>
+    <div class="dsec"><h5>Converted role</h5><p>${esc(s.r)}</p></div>
+    <div class="dsec"><h5>Provenance</h5><p>${s.o
+      ? "<em>Torchlight II skill name.</em> The name and its ladder position are original; the mechanics above are written for this conversion and are not how the skill behaves in Torchlight."
+      : "<em>New design.</em> I could not verify a Torchlight II skill for this rung, so this one was written to fill the slot the kit requires."}</p></div>`;
+  if(rel.out.length||rel.in.length){
+    h+=`<div class="dsec"><h5>Interaction states</h5><div class="chainlist">`;
+    rel.out.forEach(id=>{const c=chainById[id];
+      h+=`<div class="crow"><span class="crole out mono">APPLIES</span><span><b>${esc(c.name)}</b> — <span>${esc(c.d.split(".")[0])}.</span></span></div>`});
+    rel.in.forEach(id=>{const c=chainById[id];
+      h+=`<div class="crow"><span class="crole in mono">SPENDS</span><span><b>${esc(c.name)}</b> — <span>${esc(c.d.split(".")[0])}.</span></span></div>`});
+    h+=`</div></div>`;
+    const pr={};
+    rel.out.forEach(id=>chainById[id].c.forEach(([pw,pn])=>{if(pw!==s.w||pn!==s.n)pr[pw+"/"+pn]=[pw,pn]}));
+    rel.in.forEach(id=>chainById[id].p.forEach(([pw,pn])=>{if(pw!==s.w||pn!==s.n)pr[pw+"/"+pn]=[pw,pn]}));
+    const pv=Object.values(pr), same=pv.filter(p=>p[0]===s.w), other=pv.filter(p=>p[0]!==s.w);
+    if(same.length) h+=`<div class="dsec"><h5>Pairs with — same tree</h5><div class="xwrap">${same.map(([pw,pn],i)=>`<button class="xlink" data-s="${esc(pn)}" data-sw="${pw}">${esc(pn)}</button>${i<same.length-1?"<span>·</span>":""}`).join(" ")}</div></div>`;
+    if(other.length) h+=`<div class="dsec"><h5>Pairs with — other trees</h5><div class="xwrap">${other.map(([pw,pn],i)=>`<button class="xlink" data-s="${esc(pn)}" data-sw="${pw}">${esc(pn)} <span style="color:var(--faint);font-size:11px">(${esc(byId[pw].name)})</span></button>${i<other.length-1?"<span>·</span>":""}`).join(" ")}</div></div>`;
+  } else {
+    h+=`<div class="dsec"><h5>Interactions</h5><p>No state interaction catalogued — this skill stands on its own numbers.</p></div>`;
+  }
+  d.innerHTML=h;
+}
+function draw(){
+  drawRail();
+  const m=document.getElementById("main");
+  if(query.trim().length>=2) m.innerHTML=drawSearch(query.trim());
+  else if(view.mode==="atlas") m.innerHTML=drawAtlas();
+  else if(view.mode==="rules") m.innerHTML=drawRules();
+  else m.innerHTML=drawTree(byId[view.wid]);
+  drawDetail();
+}
+document.addEventListener("click",e=>{
+  const wb=e.target.closest(".wbtn");
+  if(wb){
+    query=""; document.getElementById("q").value="";
+    if(wb.dataset.w){ view={mode:"tree",wid:wb.dataset.w};
+      const f=byId[wb.dataset.w].t[0].s[0]; if(f) sel={w:wb.dataset.w,n:f.n}; }
+    else view={mode:wb.dataset.v};
+    draw(); window.scrollTo({top:0,behavior:"smooth"}); return;
+  }
+  const cb=e.target.closest("[data-c]");
+  if(cb){ sel={c:cb.dataset.c}; drawDetail(); document.getElementById("detail").scrollIntoView({block:"nearest",behavior:"smooth"}); return; }
+  const sb=e.target.closest("[data-s][data-sw]");
+  if(sb){
+    sel={w:sb.dataset.sw,n:sb.dataset.s};
+    if(!query.trim()&&view.mode==="tree"&&view.wid!==sb.dataset.sw){ view={mode:"tree",wid:sb.dataset.sw}; draw(); }
+    else if(view.mode!=="tree"||query.trim()){ drawDetail(); }
+    else { document.querySelectorAll(".skill[aria-pressed]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sw===sel.w&&b.dataset.s===sel.n)); drawDetail(); }
+    document.getElementById("detail").scrollIntoView({block:"nearest",behavior:"smooth"});
+  }
+});
+document.getElementById("q").addEventListener("input",e=>{query=e.target.value;draw()});
+draw();
+</script>
